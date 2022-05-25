@@ -1,0 +1,11 @@
+# Copyright Notice
+copyright: © 2022 Trong Dinh.
+
+# Meta description for your site.  This will help the search engines to find your site.
+description: Code4Future - Portfolio and personal blog of Trong Dinh.
+
+customMenus:
+  - name: Blog
+    url: https://medium.com/@trongdth
+    hideFromNavbar: false
+    showOnFooter: false

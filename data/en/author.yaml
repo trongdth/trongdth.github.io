@@ -1,0 +1,16 @@
+# some information about you
+name: "Trong Dinh"
+nickname: "Trong Dinh"
+
+# greeting message before your name. it will default to "Hi! I am" if not provided
+greeting: "Hi, I am"
+image: "images/author.png"
+
+# give your some contact information. they will be used in the footer
+contactInfo:
+  email: "trongdth@gmail.com"
+  phone: "(+84) 933352529"
+
+# some summary about what you do
+summary:
+  - "I'm a peaceful person who falls in love with blockchain technology. I always believe open source is the best way to make the application better. That's why all my projects I made are available on Github."
