@@ -18,19 +18,19 @@
 }
 
 .initial-navbar .navbar-brand {
-  color: #c0ccda;
+  /* color: #c0ccda; */
   font-weight: 600;
 }
 
 .initial-navbar li a {
-  color: #c0ccda;
+  /* color: #c0ccda; */
 }
 
 .initial-navbar .navbar-nav .active,
 .initial-navbar li a:hover {
-  color: #f9fafc;
+  /* color: #f9fafc; */
   transition: all 0.3s ease-out;
-  transform: translateY(-2px);
+  /* transform: translateY(-2px); */
 }
 
 .navbar-collapse {
@@ -39,7 +39,7 @@
 
 .navbar-collapse.show,
 .navbar-collapse.collapsing {
-  background-color: #f9fafc;
+  /* background-color: #f9fafc; */
   padding-left: 1rem;
 }
 
@@ -48,7 +48,7 @@
 /* --- state after scroll start --- */
 
 .final-navbar {
-  background-color: #f9fafc;
+  /* background-color: #f9fafc; */
   color: #1c2d41;
   transition: all 0.3s ease-out;
 }

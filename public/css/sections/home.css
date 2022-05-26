@@ -2,7 +2,7 @@
   height: 100vh;
   padding: 0;
   margin: 0;
-  color: #f9fafc;
+  color: #1c2d41;
   overflow: hidden;
 }
 
@@ -14,7 +14,7 @@
   background-attachment: fixed;
   background-position: center;
   transform: scale(1.1);
-  filter: blur(3px);
+  /* filter: blur(3px); */
   background-size: cover;
 }
 
@@ -46,12 +46,12 @@
 }
 
 .home .greeting, .home .greeting-subtitle {
-  color: #f9fafc;
+  color: #1c2d41;
 }
 
 .home .typing-carousel {
   font-size: 16pt;
-  color: #f0f0f0;
+  /* color: #f0f0f0; */
 }
 
 #typing-carousel-data {
