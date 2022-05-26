@@ -2,7 +2,7 @@
   height: 100vh;
   padding: 0;
   margin: 0;
-  color: #f9fafc;
+  color: #1c2d41;
   overflow: hidden;
 }
 
@@ -14,7 +14,7 @@
   background-attachment: fixed;
   background-position: center;
   transform: scale(1.1);
-  filter: blur(3px);
+  /* filter: blur(3px); */
   background-size: cover;
 }
 
@@ -38,20 +38,20 @@
 }
 
 .home img {
-  width: 148px;
-  height: 148px;
+  width: 248px;
+  height: 248px;
   background-color: #e7e7ef;
   padding: 5px;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 }
 
 .home .greeting, .home .greeting-subtitle {
-  color: #f9fafc;
+  color: #1c2d41;
 }
 
 .home .typing-carousel {
-  font-size: 14pt;
-  color: #f0f0f0;
+  font-size: 16pt;
+  /* color: #f0f0f0; */
 }
 
 #typing-carousel-data {
@@ -146,7 +146,7 @@
   }
 
   .home .greeting {
-    font-size: 24pt;
+    font-size: 28pt;
   }
 }
 
