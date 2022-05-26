@@ -37,7 +37,7 @@ var projectCards;
 
         ityped.init('#ityped', {
           strings: data,
-          startDelay: 550,
+          startDelay: 200,
           loop: false
         });
       }

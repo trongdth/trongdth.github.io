@@ -1,6 +1,3 @@
-[submodule "cocoa-eh-hugo-theme"]
-	path = cocoa-eh-hugo-theme
-	url = https://github.com/mtn/cocoa-eh-hugo-theme.git
-[submodule "themes/toha"]
-	path = themes/toha
-	url = git@github.com:hugo-toha/toha.git
+[submodule "themes/trongdth-toha"]
+	path = themes/trongdth-toha
+	url = git@github.com:trongdth/toha.git
