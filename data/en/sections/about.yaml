@@ -1,0 +1,57 @@
+section:
+  name: About # Title of section (default: "")
+  id: about # url id/slug of section *Required*
+  enable: true # Boolean to determine if this section is enabled (default: false)
+  weight: 1 # Order to display section in (default: alphabetical followed by weight)
+  showOnNavbar: false # Boolean to determine if a link should be shown for this section on the navbar
+
+# your designation
+designation: VP of Engineering
+# your company information
+company:
+  name: Tokoin
+  url: "https://www.tokoin.io"
+
+# a summary about you
+summary: "I'm a peaceful person who falls in love with blockchain technology. I always believe open source is the best way to make the application better. That's why all my projects are available on Github."
+
+socialLinks:
+  - name: Email
+    icon: "fas fa-envelope"
+    url: "trongdth@gmail.com"
+
+  - name: Github
+    icon: "fab fa-github"
+    url: "https://www.github.com/trongdth"
+
+  - name: Stackoverflow
+    icon: "fab fa-stack-overflow"
+    url: "https://stackoverflow.com/users/1865744/trong-dinh"
+
+  - name: LinkedIn
+    icon: "fab fa-linkedin"
+    url: "https://www.linkedin.com/in/trongdth/"
+
+  - name: Twitter
+    icon: "fab fa-twitter"
+    url: "https://twitter.com/trongdth"
+
+softSkills:
+  - name: Leadership
+    percentage: 90
+    color: blue
+
+  - name: Creativity
+    percentage: 90
+    color: yellow
+
+  - name: Time Management
+    percentage: 100
+    color: orange
+
+  - name: Product Development
+    percentage: 90
+
+  - name: Team Work
+    percentage: 100
+    color: green
