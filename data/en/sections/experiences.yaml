@@ -1,0 +1,62 @@
+# section information
+section:
+  name: Experiences
+  id: experiences
+  enable: true
+  weight: 2
+  showOnNavbar: false
+  # Can optionally hide the title in sections
+  # hideTitle: true
+
+# Your experiences
+experiences:
+  - company:
+      name: Tokoin
+      url: "https://www.tokoin.io"
+      location: Jarkata, Indonesia
+      # company overview
+      overview: TOKOIN, a technology company which aims to provide solutions to local government and companies needs through blockchain technology. Bringing together a unique group of individuals with a variety of backgrounds and skills to shape the BIT (Blockchain Innovative Thinker) family and community today and move forward towards the future.
+    positions:
+      - designation: Vice President of Engineering
+        start: Oct 2019
+        # don't provide end date if you are currently working there. It will be replaced by "Present"
+        # end: Dec 2020
+        # give some points about what was your responsibilities at the company.
+        responsibilities:
+          - Work closely with BOD to decide the strategy for all products.
+          - Involve in development process.
+          - Manage all technical teams. Have a chance to work with local and global engineers.
+
+  - company:
+      name: Space SIP
+      url: "https://www.sip.space"
+      location: HCM, Viet Nam
+      overview: Space SIP is an NFT game which is to focuses on easy to play.
+    positions:
+      - designation: Chief Technology Officer
+        start: August 2021
+        responsibilities:
+          - Join developing smart contract, and lead blockchain team.
+          - Work closely with backend team to define the infrastructure to make sure scalable and secure.
+
+  - company:
+      name: Autonomous
+      url: "https://www.autonomous.nyc"
+      location: New York, USA
+      overview: Autonomous has been driven by technological innovation since its inception in 2015. From a small group of engineers specializing in both software and hardware,
+    positions:
+      - designation: Chief Technology Officer
+        start: Jun 2017
+        end: April 2019
+        responsibilities:
+          - Build a stable coin product, called myconstant.com.
+          - Build a prediction market, called ninja prediction.
+          - Begin to research and develop blockchain products. The first prototype is handshake app which is to aim to replace docusign.
+
+      - designation: Technical Lead
+        start: Jun 2015
+        end: Jun 2017
+        responsibilities:
+          - Develop robot OS that was written in Go, called brain OS.
+          - Build smart desk AI, control the standing desk by using voice.
+          - Build personal robot that was funded 1 million dollars on Kickstarter.
