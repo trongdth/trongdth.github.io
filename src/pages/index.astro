@@ -1,0 +1,340 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { SITE_DESCRIPTION, SITE_TITLE, SOCIAL_LINKS } from '../consts';
+import { getCollection } from 'astro:content';
+
+// Get latest blog posts
+const posts = (await getCollection('blog')).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+).slice(0, 3);
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+	</head>
+	<body>
+		<Header />
+		<main>
+			<!-- Hero Section -->
+			<section class="hero">
+				<div class="hero-content">
+					<p class="hero-greeting">
+						<span class="terminal-prompt">$</span> Hello, I'm
+					</p>
+					<h1 class="hero-name">
+						Trong Dinh<span class="cursor"></span>
+					</h1>
+					<p class="hero-title">
+						<span class="glow-text">CTO</span> & Technology Leader
+					</p>
+					<p class="hero-bio">
+						1 wife, 2 kids. Opinions are my own only.<br>
+						Building the future through technology and innovation.
+					</p>
+					<div class="hero-cta">
+						<a href="/projects" class="btn">View Projects</a>
+						<a href="/blog" class="btn btn-outline">Read Blog</a>
+					</div>
+				</div>
+				<div class="hero-visual">
+					<div class="code-window">
+						<div class="code-header">
+							<span class="dot red"></span>
+							<span class="dot yellow"></span>
+							<span class="dot green"></span>
+						</div>
+						<pre><code><span class="keyword">const</span> <span class="variable">developer</span> = {"{"}<br/>  <span class="property">name</span>: <span class="string">"Trong Dinh"</span>,<br/>  <span class="property">role</span>: <span class="string">"CTO"</span>,<br/>  <span class="property">skills</span>: [<br/>    <span class="string">"Leadership"</span>,<br/>    <span class="string">"Architecture"</span>,<br/>    <span class="string">"Innovation"</span><br/>  ],<br/>  <span class="property">passion</span>: <span class="string">"Building products"</span><br/>{"}"}</code></pre>
+					</div>
+				</div>
+			</section>
+
+			<!-- Latest Posts Section -->
+			<section class="section">
+				<div class="section-header">
+					<h2>Latest Posts</h2>
+					<a href="/blog" class="view-all">View all →</a>
+				</div>
+				<div class="posts-grid">
+					{posts.map((post) => (
+						<a href={`/blog/${post.id}/`} class="post-card card">
+							<time class="post-date">
+								{post.data.pubDate.toLocaleDateString('en-US', { 
+									year: 'numeric', 
+									month: 'short', 
+									day: 'numeric' 
+								})}
+							</time>
+							<h3 class="post-title">{post.data.title}</h3>
+							<p class="post-excerpt">{post.data.description}</p>
+							<span class="read-more">Read more →</span>
+						</a>
+					))}
+				</div>
+			</section>
+
+			<!-- Quick Links Section -->
+			<section class="section">
+				<div class="section-header">
+					<h2>Quick Links</h2>
+				</div>
+				<div class="links-grid">
+					<a href={SOCIAL_LINKS.github} target="_blank" rel="noopener noreferrer" class="link-card card">
+						<svg viewBox="0 0 16 16" width="32" height="32">
+							<path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+						</svg>
+						<span>GitHub</span>
+					</a>
+					<a href={SOCIAL_LINKS.twitter} target="_blank" rel="noopener noreferrer" class="link-card card">
+						<svg viewBox="0 0 24 24" width="32" height="32">
+							<path fill="currentColor" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+						</svg>
+						<span>Twitter</span>
+					</a>
+					<a href={SOCIAL_LINKS.linkedin} target="_blank" rel="noopener noreferrer" class="link-card card">
+						<svg viewBox="0 0 24 24" width="32" height="32">
+							<path fill="currentColor" d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+						</svg>
+						<span>LinkedIn</span>
+					</a>
+					<a href="/about" class="link-card card">
+						<svg viewBox="0 0 24 24" width="32" height="32">
+							<path fill="currentColor" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+						</svg>
+						<span>About Me</span>
+					</a>
+				</div>
+			</section>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	/* Hero Section */
+	.hero {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 4em;
+		align-items: center;
+		padding: 4em 0;
+		min-height: 60vh;
+	}
+
+	.hero-greeting {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 1rem;
+		color: var(--text-secondary);
+		margin-bottom: 0.5em;
+	}
+
+	.terminal-prompt {
+		color: var(--accent-cyan);
+		margin-right: 0.5em;
+	}
+
+	.hero-name {
+		font-size: 3.5rem;
+		font-weight: 700;
+		margin-bottom: 0.25em;
+		line-height: 1.1;
+	}
+
+	.hero-title {
+		font-size: 1.5rem;
+		color: var(--text-secondary);
+		margin-bottom: 1em;
+	}
+
+	.hero-bio {
+		font-size: 1.1rem;
+		color: var(--text-muted);
+		margin-bottom: 2em;
+		line-height: 1.6;
+	}
+
+	.hero-cta {
+		display: flex;
+		gap: 1em;
+	}
+
+	/* Code Window */
+	.code-window {
+		background: var(--bg-secondary);
+		border: 1px solid var(--border-color);
+		border-radius: 12px;
+		overflow: hidden;
+		box-shadow: var(--shadow-lg);
+	}
+
+	.code-header {
+		display: flex;
+		gap: 8px;
+		padding: 12px 16px;
+		background: var(--bg-tertiary);
+		border-bottom: 1px solid var(--border-color);
+	}
+
+	.dot {
+		width: 12px;
+		height: 12px;
+		border-radius: 50%;
+	}
+
+	.dot.red { background: #ff5f56; }
+	.dot.yellow { background: #ffbd2e; }
+	.dot.green { background: #27ca40; }
+
+	.code-window pre {
+		margin: 0;
+		padding: 1.5em;
+		background: transparent;
+		border: none;
+		font-size: 0.9rem;
+	}
+
+	.code-window code {
+		background: transparent;
+		border: none;
+		padding: 0;
+		color: var(--text-primary);
+	}
+
+	.keyword { color: #c678dd; }
+	.variable { color: #e06c75; }
+	.property { color: #61afef; }
+	.string { color: #98c379; }
+
+	/* Sections */
+	.section {
+		padding: 3em 0;
+	}
+
+	.section-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 2em;
+	}
+
+	.section-header h2 {
+		margin: 0;
+	}
+
+	.view-all {
+		color: var(--accent-cyan);
+		font-weight: 500;
+	}
+
+	/* Posts Grid */
+	.posts-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+		gap: 1.5em;
+	}
+
+	.post-card {
+		display: block;
+		text-decoration: none;
+		color: inherit;
+	}
+
+	.post-date {
+		display: block;
+		font-size: 0.85rem;
+		color: var(--text-muted);
+		margin-bottom: 0.5em;
+	}
+
+	.post-title {
+		font-size: 1.25rem;
+		margin-bottom: 0.5em;
+		color: var(--text-primary);
+	}
+
+	.post-excerpt {
+		font-size: 0.95rem;
+		color: var(--text-secondary);
+		margin-bottom: 1em;
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+
+	.read-more {
+		color: var(--accent-cyan);
+		font-weight: 500;
+		font-size: 0.9rem;
+	}
+
+	/* Links Grid */
+	.links-grid {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: 1em;
+	}
+
+	.link-card {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.75em;
+		padding: 2em;
+		text-decoration: none;
+		color: var(--text-secondary);
+		text-align: center;
+	}
+
+	.link-card svg {
+		color: var(--accent-cyan);
+		transition: transform var(--transition-fast);
+	}
+
+	.link-card:hover svg {
+		transform: scale(1.1);
+	}
+
+	.link-card span {
+		font-weight: 500;
+	}
+
+	/* Responsive */
+	@media (max-width: 900px) {
+		.hero {
+			grid-template-columns: 1fr;
+			text-align: center;
+			gap: 2em;
+		}
+
+		.hero-cta {
+			justify-content: center;
+		}
+
+		.hero-visual {
+			order: -1;
+		}
+
+		.code-window {
+			max-width: 400px;
+			margin: 0 auto;
+		}
+	}
+
+	@media (max-width: 640px) {
+		.hero-name {
+			font-size: 2.5rem;
+		}
+
+		.hero-title {
+			font-size: 1.25rem;
+		}
+
+		.links-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+</style>

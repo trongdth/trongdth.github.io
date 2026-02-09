@@ -1,0 +1,169 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+import { SITE_TITLE } from '../../consts';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog')).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`Blog | ${SITE_TITLE}`} description="Thoughts, tutorials, and insights on technology and leadership" />
+	</head>
+	<body>
+		<Header />
+		<main>
+			<section class="page-hero">
+				<h1>Blog</h1>
+				<p class="page-description">
+					Thoughts, tutorials, and insights on technology, leadership, and building products.
+				</p>
+			</section>
+
+			<section class="posts-section">
+				<ul class="posts-list">
+					{posts.map((post) => (
+						<li>
+							<a href={`/blog/${post.id}/`} class="post-item card">
+								{post.data.heroImage && (
+									<img 
+										src={typeof post.data.heroImage === 'string' ? post.data.heroImage : post.data.heroImage.src} 
+										alt="" 
+										class="post-image"
+										width="200"
+										height="120"
+									/>
+								)}
+								<div class="post-content">
+									<time class="post-date">
+										{post.data.pubDate.toLocaleDateString('en-US', { 
+											year: 'numeric', 
+											month: 'long', 
+											day: 'numeric' 
+										})}
+									</time>
+									<h2 class="post-title">{post.data.title}</h2>
+									<p class="post-excerpt">{post.data.description}</p>
+									<span class="read-more">Read article →</span>
+								</div>
+							</a>
+						</li>
+					))}
+				</ul>
+			</section>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.page-hero {
+		text-align: center;
+		padding: 4em 0 2em;
+	}
+
+	.page-hero h1 {
+		font-size: 3rem;
+		margin-bottom: 0.5em;
+	}
+
+	.page-description {
+		font-size: 1.1rem;
+		color: var(--text-secondary);
+		max-width: 500px;
+		margin: 0 auto;
+	}
+
+	.posts-section {
+		padding: 2em 0 4em;
+	}
+
+	.posts-list {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 1.5em;
+	}
+
+	.post-item {
+		display: flex;
+		gap: 1.5em;
+		padding: 1.5em;
+		text-decoration: none;
+		color: inherit;
+	}
+
+	.post-image {
+		flex-shrink: 0;
+		width: 200px;
+		height: 120px;
+		object-fit: cover;
+		border-radius: 8px;
+	}
+
+	.post-content {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.post-date {
+		font-size: 0.85rem;
+		color: var(--text-muted);
+		margin-bottom: 0.5em;
+	}
+
+	.post-title {
+		font-size: 1.5rem;
+		margin: 0 0 0.5em 0;
+		color: var(--text-primary);
+		transition: color var(--transition-fast);
+	}
+
+	.post-item:hover .post-title {
+		color: var(--accent-cyan);
+	}
+
+	.post-excerpt {
+		flex: 1;
+		font-size: 0.95rem;
+		color: var(--text-secondary);
+		margin: 0 0 1em 0;
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+
+	.read-more {
+		color: var(--accent-cyan);
+		font-weight: 500;
+		font-size: 0.9rem;
+	}
+
+	@media (max-width: 640px) {
+		.page-hero h1 {
+			font-size: 2rem;
+		}
+
+		.post-item {
+			flex-direction: column;
+		}
+
+		.post-image {
+			width: 100%;
+			height: 180px;
+		}
+
+		.post-title {
+			font-size: 1.25rem;
+		}
+	}
+</style>
