@@ -82,7 +82,7 @@ import { SITE_TITLE, NAV_ITEMS, SOCIAL_LINKS } from '../consts';
 		if (menuBtn && mobileMenu) {
 			menuBtn.addEventListener('click', () => {
 				const isExpanded = menuBtn.getAttribute('aria-expanded') === 'true';
-				menuBtn.setAttribute('aria-expanded', !isExpanded);
+				menuBtn.setAttribute('aria-expanded', String(!isExpanded));
 				mobileMenu.classList.toggle('active');
 				menuBtn.classList.toggle('active');
 				document.body.classList.toggle('menu-open');
@@ -100,7 +100,8 @@ import { SITE_TITLE, NAV_ITEMS, SOCIAL_LINKS } from '../consts';
 			
 			// Close menu when clicking outside
 			document.addEventListener('click', (e) => {
-				if (!menuBtn.contains(e.target as Node) && !mobileMenu.contains(e.target as Node)) {
+				const target = e.target as Node;
+				if (!menuBtn.contains(target) && !mobileMenu.contains(target)) {
 					menuBtn.setAttribute('aria-expanded', 'false');
 					mobileMenu.classList.remove('active');
 					menuBtn.classList.remove('active');
@@ -268,6 +269,8 @@ import { SITE_TITLE, NAV_ITEMS, SOCIAL_LINKS } from '../consts';
 		transform: translateY(-10px);
 		transition: all var(--transition-fast);
 		pointer-events: none;
+		flex-direction: column;
+		gap: 1.5em;
 	}
 
 	.mobile-menu.active {
@@ -280,7 +283,6 @@ import { SITE_TITLE, NAV_ITEMS, SOCIAL_LINKS } from '../consts';
 		display: flex;
 		flex-direction: column;
 		gap: 0.5em;
-		margin-bottom: 2em;
 	}
 
 	.mobile-nav-link {
@@ -305,8 +307,9 @@ import { SITE_TITLE, NAV_ITEMS, SOCIAL_LINKS } from '../consts';
 		display: flex;
 		justify-content: center;
 		gap: 1.5em;
-		padding-top: 1.5em;
+		padding-top: 1em;
 		border-top: 1px solid var(--border-color);
+		width: 100%;
 	}
 
 	.mobile-social-links a {
