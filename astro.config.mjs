@@ -8,7 +8,7 @@ import { defineConfig } from "astro/config";
 export default defineConfig({
   // Replace with your custom domain when ready
   // For GitHub Pages: https://username.github.io or https://yourdomain.com
-  site: "https://trongdth.github.io",
+  site: "https://code4food.work",
 
   integrations: [mdx(), sitemap()],
 
