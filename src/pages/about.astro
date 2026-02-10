@@ -225,14 +225,35 @@ const skills = [
 		font-size: 0.9rem;
 	}
 
+	/* Responsive - Standardized breakpoints: 640px (mobile), 768px (tablet), 1024px (desktop) */
+	@media (max-width: 1024px) {
+		.skills-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
 	@media (max-width: 768px) {
 		.skills-grid,
 		.connect-links {
 			grid-template-columns: 1fr;
 		}
 
+		.about-hero {
+			padding: 2em 0 1em;
+		}
+
 		.about-hero h1 {
-			font-size: 2rem;
+			font-size: 1.75rem;
+		}
+
+		.lead {
+			font-size: 1.1rem;
+		}
+
+		.bio-card,
+		.skill-card,
+		.connect-link {
+			padding: 1.25em;
 		}
 	}
 </style>

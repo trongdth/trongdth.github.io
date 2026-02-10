@@ -302,8 +302,8 @@ const posts = (await getCollection('blog')).sort(
 		font-weight: 500;
 	}
 
-	/* Responsive */
-	@media (max-width: 900px) {
+	/* Responsive - Standardized breakpoints: 640px (mobile), 768px (tablet), 1024px (desktop) */
+	@media (max-width: 1024px) {
 		.hero {
 			grid-template-columns: 1fr;
 			text-align: center;
@@ -326,15 +326,38 @@ const posts = (await getCollection('blog')).sort(
 
 	@media (max-width: 640px) {
 		.hero-name {
-			font-size: 2.5rem;
+			font-size: 2rem;
 		}
 
 		.hero-title {
-			font-size: 1.25rem;
+			font-size: 1.1rem;
+		}
+
+		.hero-bio {
+			font-size: 1rem;
+		}
+
+		.hero-cta {
+			flex-direction: column;
+			gap: 0.75em;
 		}
 
 		.links-grid {
 			grid-template-columns: repeat(2, 1fr);
+			gap: 0.75em;
+		}
+
+		.link-card {
+			padding: 1.5em 1em;
+		}
+
+		.link-card svg {
+			width: 28px;
+			height: 28px;
+		}
+
+		.link-card span {
+			font-size: 0.9rem;
 		}
 	}
 </style>

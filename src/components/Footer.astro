@@ -93,9 +93,11 @@ const today = new Date();
 		display: flex;
 		align-items: center;
 		gap: 0.75em;
+		min-height: 44px;
 		color: var(--text-secondary);
 		text-decoration: none;
 		transition: all var(--transition-fast);
+		padding: 0.5em 0;
 	}
 
 	.social-links a:hover {
@@ -127,14 +129,20 @@ const today = new Date();
 		color: var(--accent-cyan);
 	}
 
+	/* Responsive - Standardized breakpoints: 640px (mobile), 768px (tablet), 1024px (desktop) */
 	@media (max-width: 640px) {
 		.footer-content {
 			flex-direction: column;
+			gap: 1.5em;
+		}
+
+		.footer-brand {
+			max-width: 100%;
 		}
 
 		.footer-bottom {
 			flex-direction: column;
-			gap: 0.5em;
+			gap: 0.75em;
 			text-align: center;
 		}
 	}
