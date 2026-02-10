@@ -162,16 +162,22 @@ const otherProjects = projects.filter(p => !p.featured);
 <style>
 	main {
 		max-width: 1000px;
+		width: 100%;
+		overflow-x: hidden;
 	}
 
 	.page-hero {
 		text-align: center;
-		padding: 4em 0 2em;
+		padding: 4em 1em 2em;
+		width: 100%;
+		box-sizing: border-box;
 	}
 
 	.page-hero h1 {
 		font-size: 3rem;
 		margin-bottom: 0.5em;
+		overflow-wrap: break-word;
+		hyphens: auto;
 	}
 
 	.page-description {
@@ -179,6 +185,7 @@ const otherProjects = projects.filter(p => !p.featured);
 		color: var(--text-secondary);
 		max-width: 600px;
 		margin: 0 auto;
+		overflow-wrap: break-word;
 	}
 
 	section {
@@ -259,6 +266,7 @@ const otherProjects = projects.filter(p => !p.featured);
 		flex-wrap: wrap;
 		gap: 0.5em;
 		margin-top: auto;
+		overflow-x: hidden;
 	}
 
 	.cta-section {
@@ -309,7 +317,12 @@ const otherProjects = projects.filter(p => !p.featured);
 		}
 
 		.page-hero {
-			padding: 2em 0 1em;
+			padding: 2em 1em 1em;
+		}
+
+		.page-description {
+			font-size: 1rem;
+			padding: 0 0.5em;
 		}
 
 		.project-card {
@@ -322,10 +335,15 @@ const otherProjects = projects.filter(p => !p.featured);
 
 		.project-card h3 {
 			font-size: 1.1rem;
+			overflow-wrap: break-word;
 		}
 
 		.project-card.featured h3 {
 			font-size: 1.25rem;
+		}
+
+		.project-card p {
+			font-size: 0.9rem;
 		}
 
 		.cta-buttons {
@@ -334,6 +352,52 @@ const otherProjects = projects.filter(p => !p.featured);
 
 		.cta-card {
 			padding: 2em 1.5em;
+		}
+	}
+
+	@media (max-width: 480px) {
+		.page-hero h1 {
+			font-size: 1.5rem;
+		}
+
+		.page-description {
+			font-size: 0.95rem;
+		}
+
+		section h2 {
+			font-size: 1.25rem;
+		}
+
+		.project-card {
+			padding: 1em;
+		}
+
+		.project-card.featured {
+			padding: 1.25em;
+		}
+
+		.project-card h3 {
+			font-size: 1rem;
+		}
+
+		.project-card.featured h3 {
+			font-size: 1.1rem;
+		}
+
+		.project-tags {
+			gap: 0.35em;
+		}
+
+		.cta-card h2 {
+			font-size: 1.1rem;
+		}
+
+		.cta-card p {
+			font-size: 0.9rem;
+		}
+
+		.cta-card {
+			padding: 1.5em 1em;
 		}
 	}
 </style>

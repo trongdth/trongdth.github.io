@@ -104,16 +104,22 @@ const skills = [
 <style>
 	main {
 		max-width: 900px;
+		width: 100%;
+		overflow-x: hidden;
 	}
 
 	.about-hero {
 		text-align: center;
-		padding: 4em 0 2em;
+		padding: 4em 1em 2em;
+		width: 100%;
+		box-sizing: border-box;
 	}
 
 	.about-hero h1 {
 		font-size: 3rem;
 		margin-bottom: 1em;
+		overflow-wrap: break-word;
+		hyphens: auto;
 	}
 
 	.lead {
@@ -122,6 +128,7 @@ const skills = [
 		max-width: 600px;
 		margin: 0 auto;
 		line-height: 1.8;
+		overflow-wrap: break-word;
 	}
 
 	.bio-section {
@@ -239,7 +246,7 @@ const skills = [
 		}
 
 		.about-hero {
-			padding: 2em 0 1em;
+			padding: 2em 1em 1em;
 		}
 
 		.about-hero h1 {
@@ -248,12 +255,43 @@ const skills = [
 
 		.lead {
 			font-size: 1.1rem;
+			padding: 0 0.5em;
 		}
 
 		.bio-card,
 		.skill-card,
 		.connect-link {
 			padding: 1.25em;
+		}
+
+		.bio-card p {
+			font-size: 1rem;
+		}
+	}
+
+	@media (max-width: 480px) {
+		.about-hero h1 {
+			font-size: 1.5rem;
+		}
+
+		.lead {
+			font-size: 1rem;
+		}
+
+		.skill-card h3 {
+			font-size: 1rem;
+		}
+
+		.connect-link {
+			padding: 1em;
+		}
+
+		.connect-link div strong {
+			font-size: 0.95rem;
+		}
+
+		.connect-link div span {
+			font-size: 0.85rem;
 		}
 	}
 </style>
