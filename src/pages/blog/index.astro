@@ -1,5 +1,6 @@
 ---
 import BaseHead from '../../components/BaseHead.astro';
+import BlogPlaceholder from '../../components/BlogPlaceholder.astro';
 import Footer from '../../components/Footer.astro';
 import Header from '../../components/Header.astro';
 import { SITE_TITLE } from '../../consts';
@@ -30,7 +31,7 @@ const posts = (await getCollection('blog')).sort(
 					{posts.map((post) => (
 						<li>
 							<a href={`/blog/${post.id}/`} class="post-item card">
-								{post.data.heroImage && (
+								{post.data.heroImage ? (
 									<img 
 										src={typeof post.data.heroImage === 'string' ? post.data.heroImage : post.data.heroImage.src} 
 										alt="" 
@@ -38,6 +39,8 @@ const posts = (await getCollection('blog')).sort(
 										width="200"
 										height="120"
 									/>
+								) : (
+									<BlogPlaceholder title={post.data.title} variant="thumbnail" />
 								)}
 								<div class="post-content">
 									<time class="post-date">

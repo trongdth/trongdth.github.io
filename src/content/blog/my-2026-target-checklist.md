@@ -2,7 +2,6 @@
 title: 'My 2026 Target Checklist'
 description: 'My goals and targets for 2026 — career, health, learning, and more.'
 pubDate: 'Feb 13 2026'
-heroImage: '../../assets/blog-placeholder-1.jpg'
 ---
 
 Another year, another list. I've learned that writing goals down makes them real — accountability starts with visibility. Here's what I'm committing to in 2026.
