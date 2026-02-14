@@ -16,3 +16,6 @@ export const NAV_ITEMS = [
   { label: "Projects", href: "/projects" },
   { label: "About", href: "/about" },
 ];
+
+// Google Analytics 4 Measurement ID
+export const GA_MEASUREMENT_ID = "G-XXXXXXXXXX";
