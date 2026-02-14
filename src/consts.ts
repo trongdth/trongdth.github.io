@@ -18,4 +18,4 @@ export const NAV_ITEMS = [
 ];
 
 // Google Analytics 4 Measurement ID
-export const GA_MEASUREMENT_ID = "G-XXXXXXXXXX";
+export const GA_MEASUREMENT_ID = "G-L187KVEGM7";
