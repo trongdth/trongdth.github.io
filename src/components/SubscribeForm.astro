@@ -1,0 +1,130 @@
+---
+// SubscribeForm.astro
+---
+
+<div class="subscribe-container">
+	<h3>Subscribe to my blog</h3>
+	<p>Get the latest posts delivered right to your inbox (actually, just added to a spreadsheet for now!).</p>
+	<form id="subscribe-form">
+		<input type="email" id="email" name="email" placeholder="Your email address" required />
+		<button type="submit" id="submit-btn">Subscribe</button>
+	</form>
+	<p id="form-message" class="message hidden"></p>
+</div>
+
+<style>
+	.subscribe-container {
+		background: var(--bg-secondary, #1a1a24);
+		color: var(--text-primary, #fff);
+		padding: 2rem;
+		border-radius: 8px;
+		margin: 2rem 0;
+		text-align: center;
+		border: 1px solid var(--border-color, #333);
+	}
+	.subscribe-container h3 {
+		margin-top: 0;
+		color: var(--accent-cyan, #0ff);
+	}
+	#subscribe-form {
+		display: flex;
+		gap: 0.5rem;
+		justify-content: center;
+		margin-top: 1rem;
+	}
+	input[type="email"] {
+		padding: 0.5rem 1rem;
+		background: var(--bg-primary, #0a0a0f);
+		color: var(--text-primary, #fff);
+		border: 1px solid var(--border-color, #333);
+		border-radius: 4px;
+		width: 100%;
+		max-width: 300px;
+	}
+	button {
+		padding: 0.5rem 1rem;
+		background: var(--accent-cyan, #0ff);
+		color: #000;
+		border: none;
+		border-radius: 4px;
+		cursor: pointer;
+		font-weight: bold;
+		transition: background 0.2s;
+	}
+	button:hover {
+		background: var(--accent-purple, #b200ff);
+		color: #fff;
+	}
+	button:disabled {
+		opacity: 0.7;
+		cursor: not-allowed;
+	}
+	.message {
+		margin-top: 1rem;
+		font-size: 0.9rem;
+	}
+	.hidden {
+		display: none;
+	}
+	.success {
+		color: green;
+	}
+	.error {
+		color: red;
+	}
+</style>
+
+<script>
+	// REPLACE THIS URL WITH YOUR GOOGLE APPS SCRIPT WEB APP URL
+	const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxLzS723KoXjJQ1_aK5UyEZ907N_17pnBaFA5D2WfXbS0vOw7SzZy8DvHLsk9UOSBMY/exec';
+
+	const form = document.getElementById('subscribe-form') as HTMLFormElement;
+	const msgEl = document.getElementById('form-message');
+	const btn = document.getElementById('submit-btn') as HTMLButtonElement;
+
+	if (form) {
+		form.addEventListener('submit', async (e) => {
+			e.preventDefault();
+
+			if (!SCRIPT_URL) {
+				showMessage('Please configure the Google Apps Script URL first.', 'error');
+				return;
+			}
+
+			btn.disabled = true;
+			btn.textContent = 'Submitting...';
+			
+			const formData = new FormData(form);
+			
+		try {
+			const response = await fetch(SCRIPT_URL, {
+				method: 'POST',
+				body: formData
+			});
+			
+			const data = await response.json();
+			
+			if (response.ok && data.result === 'success') {
+				showMessage('Thanks for subscribing!', 'success');
+				form.reset();
+			} else {
+				throw new Error(data.error || 'Network response was not ok.');
+			}
+		} catch (error: any) {
+				console.error('Error!', (error as Error).message);
+				showMessage('Something went wrong. Please try again.', 'error');
+			} finally {
+				btn.disabled = false;
+				btn.textContent = 'Subscribe';
+			}
+		});
+	}
+
+	function showMessage(text: string, type: 'success' | 'error') {
+		if (msgEl) {
+			msgEl.textContent = text;
+			msgEl.className = `message ${type}`;
+			msgEl.classList.remove('hidden');
+		}
+	}
+</script>
