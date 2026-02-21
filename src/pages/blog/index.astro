@@ -3,6 +3,7 @@ import BaseHead from '../../components/BaseHead.astro';
 import BlogPlaceholder from '../../components/BlogPlaceholder.astro';
 import Footer from '../../components/Footer.astro';
 import Header from '../../components/Header.astro';
+import SubscribeForm from '../../components/SubscribeForm.astro';
 import { SITE_TITLE } from '../../consts';
 import { getCollection } from 'astro:content';
 
@@ -58,6 +59,10 @@ const posts = (await getCollection('blog')).sort(
 						</li>
 					))}
 				</ul>
+			</section>
+
+			<section class="subscribe-section">
+				<SubscribeForm />
 			</section>
 		</main>
 		<Footer />
