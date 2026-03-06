@@ -2,6 +2,7 @@
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
+import AdPlaceholder from '../components/AdPlaceholder.astro';
 import { SITE_DESCRIPTION, SITE_TITLE, SOCIAL_LINKS } from '../consts';
 import { getCollection } from 'astro:content';
 
@@ -52,6 +53,9 @@ const posts = (await getCollection('blog')).sort(
 				</div>
 			</section>
 
+			<!-- Ad: Leaderboard after Hero -->
+			<AdPlaceholder format="leaderboard" label="Ad - After Hero" />
+
 			<!-- Latest Posts Section -->
 			<section class="section">
 				<div class="section-header">
@@ -75,6 +79,9 @@ const posts = (await getCollection('blog')).sort(
 					))}
 				</div>
 			</section>
+
+			<!-- Ad: Banner between sections -->
+			<AdPlaceholder format="banner" label="Ad - Between Sections" />
 
 			<!-- Quick Links Section -->
 			<section class="section">

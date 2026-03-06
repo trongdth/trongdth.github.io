@@ -1,0 +1,21 @@
+---
+import { GOOGLE_ADSENSE_ID } from '../consts';
+
+// Auto-prepend 'ca-' if user only provides 'pub-XXX'
+const clientId = GOOGLE_ADSENSE_ID
+  ? GOOGLE_ADSENSE_ID.startsWith('ca-')
+    ? GOOGLE_ADSENSE_ID
+    : `ca-${GOOGLE_ADSENSE_ID}`
+  : '';
+---
+
+{
+  clientId && (
+    <script
+      is:inline
+      async
+      src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${clientId}`}
+      crossorigin="anonymous"
+    ></script>
+  )
+}

@@ -6,6 +6,7 @@ import type { ImageMetadata } from 'astro';
 import FallbackImage from '../assets/blog-placeholder-1.jpg';
 import { SITE_TITLE } from '../consts';
 import GoogleAnalytics from './GoogleAnalytics.astro';
+import GoogleAdSense from './GoogleAdSense.astro';
 
 interface Props {
 	title: string;
@@ -60,3 +61,6 @@ const { title, description, image = FallbackImage } = Astro.props;
 
 <!-- Google Analytics 4 -->
 <GoogleAnalytics />
+
+<!-- Google AdSense -->
+<GoogleAdSense />

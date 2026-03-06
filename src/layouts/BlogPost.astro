@@ -7,6 +7,7 @@ import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import Header from '../components/Header.astro';
 import SubscribeForm from '../components/SubscribeForm.astro';
+import AdPlaceholder from '../components/AdPlaceholder.astro';
 
 type Props = CollectionEntry<'blog'>['data'];
 
@@ -41,9 +42,13 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 					<h1>{title}</h1>
 					<p class="description">{description}</p>
 				</div>
+				<!-- Ad: In-article ad before content -->
+				<AdPlaceholder format="in-article" label="Ad - In Article" />
 				<div class="article-content">
 					<slot />
 				</div>
+				<!-- Ad: Rectangle ad after content -->
+				<AdPlaceholder format="rectangle" label="Ad - After Content" />
 				<SubscribeForm />
 			</article>
 			<div class="back-link">
