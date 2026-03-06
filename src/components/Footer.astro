@@ -36,7 +36,10 @@ const today = new Date();
 	</div>
 
 	<div class="footer-bottom">
-		<p>&copy; {today.getFullYear()} Trong Dinh. All rights reserved.</p>
+		<div class="footer-bottom-links">
+			<p>&copy; {today.getFullYear()} Trong Dinh. All rights reserved.</p>
+			<a href="/privacy-policy" class="privacy-link">Privacy Policy</a>
+		</div>
 		<p class="powered-by">Powered by <a href="https://astro.build" target="_blank" rel="noopener">Astro</a></p>
 	</div>
 </footer>
@@ -115,10 +118,27 @@ const today = new Date();
 		border-top: 1px solid var(--border-color);
 	}
 
-	.footer-bottom p {
+	.footer-bottom-links {
+		display: flex;
+		align-items: center;
+		gap: 1.5em;
+	}
+
+	.footer-bottom-links p {
 		margin: 0;
 		color: var(--text-muted);
 		font-size: 0.875rem;
+	}
+
+	.privacy-link {
+		color: var(--text-muted);
+		font-size: 0.875rem;
+		text-decoration: none;
+		transition: color var(--transition-fast);
+	}
+
+	.privacy-link:hover {
+		color: var(--accent-cyan);
 	}
 
 	.powered-by a {

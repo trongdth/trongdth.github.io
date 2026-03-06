@@ -1,0 +1,86 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`Privacy Policy | ${SITE_TITLE}`} description="Privacy Policy for Trong Dinh's Portfolio and Blog" />
+		<style>
+			.privacy-content {
+				max-width: 800px;
+				margin: 0 auto;
+				padding: 4em 1em;
+				color: var(--text-secondary);
+				line-height: 1.8;
+			}
+			.privacy-content h1 {
+				font-size: 2.5em;
+				color: var(--text-primary);
+				margin-bottom: 0.5em;
+			}
+			.privacy-content .last-updated {
+				font-style: italic;
+				color: var(--text-muted);
+				margin-bottom: 2em;
+			}
+			.privacy-content h2 {
+				color: var(--text-primary);
+				margin-top: 1.5em;
+				margin-bottom: 0.5em;
+			}
+			.privacy-content p {
+				margin-bottom: 1em;
+			}
+			.privacy-content ul {
+				margin-bottom: 1em;
+				padding-left: 1.5em;
+			}
+			.privacy-content li {
+				margin-bottom: 0.5em;
+			}
+			.privacy-content a {
+				color: var(--accent-cyan);
+				text-decoration: none;
+			}
+			.privacy-content a:hover {
+				text-decoration: underline;
+			}
+		</style>
+	</head>
+	<body>
+		<Header />
+		<main>
+			<article class="privacy-content">
+				<h1>Privacy Policy</h1>
+				<p class="last-updated">Last updated: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+
+				<p>This Privacy Policy describes how your personal information is collected, used, and shared when you visit my website.</p>
+
+				<h2>1. Information I Collect</h2>
+				<p>When you visit the site, certain information about your device may be automatically collected, including information about your web browser, IP address, time zone, and some of the cookies that are installed on your device.</p>
+				
+				<h2>2. Google AdSense</h2>
+				<p>This website uses Google AdSense, a service for including advertisements. Google AdSense uses cookies that are stored on your computer and which allow an analysis of the use of the website.</p>
+				<ul>
+					<li>Third party vendors, including Google, use cookies to serve ads based on a user's prior visits to your website or other websites.</li>
+					<li>Google's use of advertising cookies enables it and its partners to serve ads to your users based on their visit to your sites and/or other sites on the Internet.</li>
+					<li>Users may opt out of personalized advertising by visiting <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer">Ads Settings</a>.</li>
+				</ul>
+
+				<h2>3. Google Analytics</h2>
+				<p>This website may also use Google Analytics to help me understand how my customers use the site. You can read more about how Google uses your Personal Information here: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google Privacy & Terms</a>.</p>
+
+				<h2>4. Your Consent</h2>
+				<p>By using my site, you consent to my website's privacy policy. Users in the European Economic Area (EEA) and the UK will be prompted to manage their consent settings upon their first visit via a Consent Management Platform (CMP).</p>
+
+				<h2>5. Contact Me</h2>
+				<p>For more information about my privacy practices, if you have questions, or if you would like to make a complaint, please contact me by e-mail at <a href="mailto:contact@trongdth.com">contact@trongdth.com</a> or via my social media links provided on the website.</p>
+			</article>
+		</main>
+		<Footer />
+	</body>
+</html>
