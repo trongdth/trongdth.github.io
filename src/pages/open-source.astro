@@ -1,0 +1,256 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { SITE_TITLE, SOCIAL_LINKS } from '../consts';
+
+
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`Open Source | ${SITE_TITLE}`} description="My contributions to the open source community." />
+	</head>
+	<body>
+		<Header />
+		<main>
+			<section class="page-hero">
+				<h1>Open Source</h1>
+				<p class="page-description">
+					My contributions to the open source community.
+				</p>
+			</section>
+
+			<section class="projects-section">
+				<div class="projects-grid">
+					<a href="https://github.com/trongdth/awesome-llm-security" target="_blank" rel="noopener noreferrer" class="project-card card">
+						<div class="project-content">
+							<div class="project-header">
+								<h2>Awesome LLM Security</h2>
+								<svg viewBox="0 0 24 24" width="20" height="20" class="external-icon">
+									<path fill="currentColor" d="M19 19H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/>
+								</svg>
+							</div>
+							<p>A curated list of LLM security resources including papers, tools, benchmarks, and best practices for building secure AI systems.</p>
+							<div class="project-tags">
+								<span class="tag">Security</span>
+								<span class="tag">LLM</span>
+								<span class="tag">Awesome List</span>
+							</div>
+						</div>
+					</a>
+				</div>
+			</section>
+
+			<section class="cta-section">
+				<div class="cta-card card">
+					<h2>Want to contribute?</h2>
+					<p>Check out my GitHub for more open source projects or start collaborating today.</p>
+					<div class="cta-buttons">
+						<a href={SOCIAL_LINKS.github} target="_blank" rel="noopener noreferrer" class="btn">
+							<svg viewBox="0 0 16 16" width="20" height="20">
+								<path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+							</svg>
+							View GitHub
+						</a>
+						<a href="/about" class="btn btn-outline">About Me</a>
+					</div>
+				</div>
+			</section>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	main {
+		max-width: 1000px;
+		width: 100%;
+		overflow-x: hidden;
+	}
+
+	.page-hero {
+		text-align: center;
+		padding: 4em 1em 2em;
+		width: 100%;
+		box-sizing: border-box;
+	}
+
+	.page-hero h1 {
+		font-size: 3rem;
+		margin-bottom: 0.5em;
+		overflow-wrap: break-word;
+		hyphens: auto;
+	}
+
+	.page-description {
+		font-size: 1.1rem;
+		color: var(--text-secondary);
+		max-width: 600px;
+		margin: 0 auto;
+		overflow-wrap: break-word;
+	}
+
+	section {
+		padding: 2em 0;
+	}
+
+	section h2 {
+		margin-bottom: 1.5em;
+		font-size: 1.5rem;
+	}
+
+	.projects-section {
+		padding: 3em 0;
+	}
+
+	.projects-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+		gap: 2em;
+		width: 100%;
+	}
+
+	.project-card {
+		display: flex;
+		flex-direction: column;
+		text-decoration: none;
+		color: inherit;
+		height: 100%;
+		padding: 2em;
+	}
+
+	.project-content {
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+		gap: 1em;
+	}
+
+	.project-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-start;
+		gap: 1em;
+	}
+
+	.project-header h2 {
+		margin: 0;
+		font-size: 1.5rem;
+		color: var(--text-primary);
+		transition: color 300ms;
+	}
+
+	.project-card:hover .project-header h2 {
+		color: var(--accent-cyan);
+	}
+
+	.external-icon {
+		color: var(--text-muted);
+		transition: color 300ms, transform 300ms;
+	}
+
+	.project-card:hover .external-icon {
+		color: var(--accent-cyan);
+		transform: translate(2px, -2px);
+	}
+
+	.project-content p {
+		margin: 0;
+		color: var(--text-secondary);
+		line-height: 1.6;
+		flex-grow: 1;
+	}
+
+	.project-tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75em;
+		margin-top: 0.5em;
+	}
+
+	.cta-section {
+		padding: 3em 0;
+	}
+
+	.cta-card {
+		text-align: center;
+		padding: 3em;
+		background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-secondary) 100%);
+	}
+
+	.cta-card h2 {
+		margin-bottom: 0.5em;
+	}
+
+	.cta-card p {
+		color: var(--text-secondary);
+		margin-bottom: 1.5em;
+	}
+
+	.cta-buttons {
+		display: flex;
+		justify-content: center;
+		gap: 1em;
+	}
+
+	/* Responsive - Standardized breakpoints: 640px (mobile), 768px (tablet), 1024px (desktop) */
+
+	@media (max-width: 640px) {
+		.page-hero h1 {
+			font-size: 1.75rem;
+		}
+
+		.page-hero {
+			padding: 2em 1em 1em;
+		}
+
+		.page-description {
+			font-size: 1rem;
+			padding: 0 0.5em;
+		}
+
+		.projects-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.project-card {
+			padding: 1.5em;
+		}
+
+		.cta-buttons {
+			flex-direction: column;
+		}
+
+		.cta-card {
+			padding: 2em 1.5em;
+		}
+	}
+
+	@media (max-width: 480px) {
+		.page-hero h1 {
+			font-size: 1.5rem;
+		}
+
+		.page-description {
+			font-size: 0.95rem;
+		}
+
+		section h2 {
+			font-size: 1.25rem;
+		}
+
+		.cta-card h2 {
+			font-size: 1.1rem;
+		}
+
+		.cta-card p {
+			font-size: 0.9rem;
+		}
+
+		.cta-card {
+			padding: 1.5em 1em;
+		}
+	}
+</style>
