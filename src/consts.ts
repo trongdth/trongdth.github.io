@@ -15,6 +15,7 @@ export const NAV_ITEMS = [
   { label: "Blog", href: "/blog" },
   { label: "Projects", href: "/projects" },
   { label: "Open Source", href: "/open-source" },
+  { label: "Resume", href: "/resume" },
   { label: "About", href: "/about" },
 ];
 
