@@ -8,6 +8,7 @@ import FormattedDate from '../components/FormattedDate.astro';
 import Header from '../components/Header.astro';
 import SubscribeForm from '../components/SubscribeForm.astro';
 import AdPlaceholder from '../components/AdPlaceholder.astro';
+import SocialShare from '../components/SocialShare.astro';
 
 type Props = CollectionEntry<'blog'>['data'];
 
@@ -41,6 +42,7 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 					</div>
 					<h1>{title}</h1>
 					<p class="description">{description}</p>
+					<SocialShare title={title} url={Astro.url.href} />
 				</div>
 				<!-- Ad: In-article ad before content -->
 				<AdPlaceholder format="in-article" label="Ad - In Article" />
