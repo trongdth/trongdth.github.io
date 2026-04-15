@@ -2,6 +2,7 @@
 
 import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
+import react from "@astrojs/react";
 import { defineConfig } from "astro/config";
 
 // https://astro.build/config
@@ -10,7 +11,7 @@ export default defineConfig({
   // For GitHub Pages: https://username.github.io or https://yourdomain.com
   site: "https://code4food.work",
 
-  integrations: [mdx(), sitemap()],
+  integrations: [mdx(), sitemap(), react()],
 
   // Output static files for GitHub Pages
   output: "static",

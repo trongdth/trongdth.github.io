@@ -1,0 +1,30 @@
+---
+title: 'Understanding Margin Trading: An Interactive Simulator'
+description: 'Learn the mechanics of Longs, Shorts, Liquidation, and Cross vs. Isolated margin with our interactive simulator.'
+pubDate: 'Apr 14 2026'
+heroImage: '../../assets/margin-trading-hero.png'
+---
+
+import MarginTradingSimulator from '../../components/MarginTradingSimulator.jsx';
+
+Margin trading can be complex and risky. Understanding how leverage, margin modes, and liquidation prices interact is crucial for any trader. 
+
+This interactive simulator is designed to help you visualize these concepts in a safe, risk-free environment. Use the tabs below to learn the core concepts, simulate a single position, or experiment with multi-position cross margin management.
+
+<MarginTradingSimulator client:load />
+
+## Key Concepts
+
+### 1. Leverage
+Leverage allows you to control a larger position with a smaller amount of actual capital (margin). For example, 10x leverage means you can control a $10,000 position with only $1,000 of your own money.
+
+### 2. Isolated vs. Cross Margin
+- **Isolated Margin**: Limits your risk to the individual position. If you are liquidated, you only lose the margin assigned to that specific trade.
+- **Cross Margin**: Uses your entire wallet balance to back all open positions. This provides more buffer against liquidation but puts your entire account at risk.
+
+### 3. Liquidation Price
+The liquidation price is the point at which your losses equal your margin. If the market price reaches this level, the exchange will force-close your position to prevent you from going into a negative balance.
+
+***
+
+**Disclaimer**: This simulator is for educational purposes only. Margin trading involves significant risk of loss and is not suitable for all investors.
