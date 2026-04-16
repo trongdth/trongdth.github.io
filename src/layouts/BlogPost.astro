@@ -9,6 +9,7 @@ import Header from '../components/Header.astro';
 import SubscribeForm from '../components/SubscribeForm.astro';
 import AdPlaceholder from '../components/AdPlaceholder.astro';
 import SocialShare from '../components/SocialShare.astro';
+import Comments from '../components/Comments';
 
 type Props = CollectionEntry<'blog'>['data'];
 
@@ -52,6 +53,7 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 				<!-- Ad: Rectangle ad after content -->
 				<AdPlaceholder format="rectangle" label="Ad - After Content" />
 				<SubscribeForm />
+				<Comments client:visible postId={Astro.url.pathname} />
 			</article>
 			<div class="back-link">
 				<a href="/blog">← Back to Blog</a>

@@ -13,6 +13,7 @@
     "@astrojs/react": "^5.0.3",
     "@astrojs/rss": "^4.0.15",
     "@astrojs/sitemap": "^3.7.0",
+    "@supabase/supabase-js": "^2.103.2",
     "astro": "^5.17.1",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
