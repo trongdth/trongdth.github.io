@@ -187,24 +187,24 @@ const concepts = [
       },
       {
         label: "Isolated Long",
-        detail: "Liq Price = Entry × (1 − 1/Leverage + MMR)",
+        detail: "Liq Price = Entry Price × (1 − 1/Leverage + MMR)",
         icon: "🔒",
       },
       {
         label: "Isolated Short",
-        detail: "Liq Price = Entry × (1 + 1/Leverage + MMR)",
+        detail: "Liq Price = Entry Price × (1 + 1/Leverage + MMR)",
         icon: "🔒",
       },
       {
         label: "Cross Long",
         detail:
-          "Liq Price = (Entry − Margin / Amount) / (1 − MMR − Fee Rate). Margin = (Wallet + All Unrealized PnL) − This Position's PnL − Other Positions' Maintenance Margins.",
+          "Liq Price = (Entry Price − Margin / Amount) / (1 − MMR − Fee Rate). Margin = (Wallet Balance + All Unrealized PnL) − This Position's PnL − Other Positions' Maintenance Margins.",
         icon: "🌐",
       },
       {
         label: "Cross Short",
         detail:
-          "Liq Price = (Entry + Margin / Amount) / (1 + MMR + Fee Rate). Same Margin calc — it's the effective buffer left for THIS position after reserving what other positions need.",
+          "Liq Price = (Entry Price + Margin / Amount) / (1 + MMR + Fee Rate). Same Margin calc — it's the effective buffer left for THIS position after reserving what other positions need.",
         icon: "🌐",
       },
     ],
@@ -232,7 +232,7 @@ const concepts = [
       {
         label: "Unrealized PnL",
         detail:
-          "Floating PnL before closing. Long: Qty × (Mark − Entry). Short: Qty × (Entry − Mark).",
+          "Floating PnL before closing. Long: Qty × (Mark Price − Entry Price). Short: Qty × (Entry Price − Mark Price). Mark Price = real-time fair price calculated by the exchange to prevent manipulation.",
         icon: "📐",
       },
       {
@@ -244,14 +244,17 @@ const concepts = [
       {
         label: "ROE%",
         detail:
-          "Return on Equity = (PnL / Margin) × 100. 10x leverage + 5% price move = 50% ROE.",
+          "Return on Equity = (Unrealized PnL / Margin) × 100. Leverage amplifies ROE: a 5% price move with 10x leverage means your PnL is 50% of your margin, so ROE = 50%.",
         icon: "🚀",
       },
     ],
     example: {
-      title: "Example — Short 1 BTC at $70k, now $65k, 0.075% fee",
+      title: "Example — Short 1 BTC at $70k, 10x, Mark Price $65k, 0.075% fee",
       lines: [
-        "Unrealized PnL = (70,000 − 65,000) × 1 = +$5,000",
+        "Margin = $70,000 / 10 = $7,000",
+        "Unrealized PnL = ($70,000 − $65,000) × 1 = +$5,000",
+        "ROE = $5,000 / $7,000 × 100 = +71.4%",
+        "",
         "Entry Fee = $70,000 × 0.075% = $52.50",
         "Exit Fee = $65,000 × 0.075% = $48.75",
         "Realized PnL = $5,000 − $52.50 − $48.75 = +$4,898.75",
@@ -293,6 +296,8 @@ function calcResults(
   const maintenanceMargin = positionSize * mr;
   const orderCost = initialMargin + entryFee + exitFeeAtEntry;
 
+  // Can open? Wallet must cover order cost
+  const canOpen = walletBalance >= orderCost;
   // PnL
   const unrealizedPnl =
     direction === "long"
@@ -336,6 +341,7 @@ function calcResults(
     isLiquidated,
     effectiveMargin,
     marginLeft,
+    canOpen,
     entryFee,
     exitFee: exitFeeAtCurrent,
     initialMargin,
@@ -972,15 +978,24 @@ function MultiPositionSim() {
   const totalPnl = positions.reduce((s, p) => s + getPnl(p), 0);
   const available = wallet - totalUsed + Math.min(0, totalPnl);
 
+  // Estimate order cost for new position (using 0.075% taker fee as default for multi-pos)
+  const newPosSize = newMargin * newLev;
+  const newFee = newPosSize * 0.00075;
+  const newOrderCost =
+    newPosSize / newLev +
+    newFee +
+    newFee +
+    (newDir === "short" ? (newPosSize / newLev) * 0.00075 : 0);
+
   const tryAdd = () => {
     setError("");
     if (newMargin <= 0) {
       setError("Margin must be > 0");
       return;
     }
-    if (newMargin > available) {
+    if (newOrderCost > available) {
       setError(
-        `Need ${fmt(newMargin)} but only ${fmt(Math.max(0, available))} available.`,
+        `Order cost ${fmt(newOrderCost)} exceeds available ${fmt(Math.max(0, available))}. Margin alone is ${fmt(newMargin)}, but fees add ${fmt(newOrderCost - newMargin)}.`,
       );
       return;
     }
@@ -1351,16 +1366,21 @@ function MultiPositionSim() {
               />
               <StatRow
                 items={[
-                  { label: "Pos Size", val: fmt(newMargin * newLev) },
+                  { label: "Pos Size", val: fmt(newPosSize) },
+                  {
+                    label: "Order Cost",
+                    val: fmt(newOrderCost),
+                    color: available >= newOrderCost ? undefined : C.red,
+                  },
                   {
                     label: "Available",
                     val: fmt(Math.max(0, available)),
-                    color: available >= newMargin ? C.accent : C.red,
+                    color: available >= newOrderCost ? C.accent : C.red,
                   },
                   {
                     label: "Status",
-                    val: available >= newMargin ? "OK" : "BLOCKED",
-                    color: available >= newMargin ? C.green : C.red,
+                    val: available >= newOrderCost ? "OK" : "BLOCKED",
+                    color: available >= newOrderCost ? C.green : C.red,
                   },
                 ]}
               />
@@ -1380,15 +1400,10 @@ function MultiPositionSim() {
                 }}
               >
                 <span style={{ color: C.red, fontWeight: 700 }}>
-                  Insufficient margin
+                  Cannot open position
                 </span>
                 <br />
-                Required:{" "}
-                <span style={{ color: C.text }}>{fmt(newMargin)}</span> ·
-                Available:{" "}
-                <span style={{ color: C.red }}>
-                  {fmt(Math.max(0, available))}
-                </span>
+                {error}
               </div>
             )}
             <button
@@ -1397,17 +1412,17 @@ function MultiPositionSim() {
                 width: "100%",
                 padding: "14px 20px",
                 background:
-                  available >= newMargin ? `${C.accent}12` : "transparent",
-                border: `1.5px solid ${available >= newMargin ? C.accent : C.dim}55`,
+                  available >= newOrderCost ? `${C.accent}12` : "transparent",
+                border: `1.5px solid ${available >= newOrderCost ? C.accent : C.dim}55`,
                 borderRadius: 12,
-                color: available >= newMargin ? C.accent : C.dim,
+                color: available >= newOrderCost ? C.accent : C.dim,
                 fontWeight: 700,
                 fontSize: 15,
                 cursor: "pointer",
                 ...mono,
               }}
             >
-              {available >= newMargin ? "Open position" : "Try anyway"}
+              {available >= newOrderCost ? "Open position" : "Try anyway"}
             </button>
           </div>
         )}
@@ -1445,9 +1460,12 @@ export default function MarginTradingSimulator() {
   const [direction, setDirection] = useState("long");
   const [marginMode, setMarginMode] = useState("isolated");
   const [feeRate, setFeeRate] = useState(0.075);
+  const [makerFeeRate, setMakerFeeRate] = useState(0.02);
+  const [orderType, setOrderType] = useState("market");
   const [mmr, setMmr] = useState(0.5);
 
   const clampedMargin = Math.min(margin, wallet);
+  const activeFeeRate = orderType === "market" ? feeRate : makerFeeRate;
   const r = calcResults(
     entry,
     current,
@@ -1456,7 +1474,7 @@ export default function MarginTradingSimulator() {
     direction,
     marginMode,
     wallet,
-    feeRate,
+    activeFeeRate,
     mmr,
   );
 
@@ -1478,20 +1496,20 @@ export default function MarginTradingSimulator() {
   };
 
   const [autoPlay, setAutoPlay] = useState(false);
-  const [autoDir, setAutoDir] = useState(1);
   useEffect(() => {
     if (!autoPlay) return;
+    let dir = 1;
     const iv = setInterval(() => {
       setCurrent((p) => {
-        const step = entry * 0.002;
-        let n = p + step * autoDir;
-        if (n > entry * 1.25) setAutoDir(-1);
-        if (n < entry * 0.75) setAutoDir(1);
+        const step = entry * 0.003;
+        let n = p + step * dir;
+        if (n > entry * 1.2) dir = -1;
+        if (n < entry * 0.8) dir = 1;
         return Math.round(n);
       });
-    }, 120);
+    }, 100);
     return () => clearInterval(iv);
-  }, [autoPlay, autoDir, entry]);
+  }, [autoPlay, entry]);
 
   return (
     <div
@@ -1840,27 +1858,91 @@ export default function MarginTradingSimulator() {
                     { label: "Pos Size", val: fmt(r.positionSize) },
                     { label: "Quantity", val: `${r.quantity.toFixed(4)}` },
                     { label: "Init Margin", val: fmt(r.initialMargin) },
-                    { label: "Order Cost", val: fmt(r.orderCost) },
+                    {
+                      label: "Order Cost",
+                      val: fmt(r.orderCost),
+                      color: r.canOpen ? undefined : C.red,
+                    },
                   ]}
                 />
+
+                {!r.canOpen && (
+                  <div
+                    style={{
+                      marginTop: 10,
+                      padding: "10px 14px",
+                      background: `${C.red}10`,
+                      border: `1px solid ${C.red}33`,
+                      borderRadius: 8,
+                      ...mono,
+                      fontSize: 13,
+                      color: C.red,
+                      lineHeight: 1.7,
+                    }}
+                  >
+                    Cannot open position — Order Cost ({fmt(r.orderCost)})
+                    exceeds Wallet Balance ({fmt(wallet)}).
+                    {r.orderCost - wallet > 0 && (
+                      <span style={{ color: C.muted }}>
+                        {" "}
+                        Need {fmt(r.orderCost - wallet)} more.
+                      </span>
+                    )}
+                  </div>
+                )}
               </Sub>
 
               <Sub borderColor={`${C.purple}22`}>
                 <SubLabel
                   color={C.purple}
-                  label="Fee & MMR settings"
-                  hint="match your exchange"
+                  label="Order type & fees"
+                  hint="market = taker, limit = maker"
                 />
-                <Slider
-                  label="Fee Rate (Taker)"
-                  value={feeRate}
-                  onChange={setFeeRate}
-                  min={0}
-                  max={0.2}
-                  step={0.005}
-                  unit="%"
+                <ToggleGroup
+                  options={[
+                    { value: "market", label: "Market", icon: "⚡" },
+                    { value: "limit", label: "Limit", icon: "📋" },
+                  ]}
+                  value={orderType}
+                  onChange={setOrderType}
                   color={C.purple}
                 />
+                <div
+                  style={{
+                    fontSize: 13,
+                    color: C.muted,
+                    ...mono,
+                    marginTop: -8,
+                    marginBottom: 14,
+                  }}
+                >
+                  {orderType === "market"
+                    ? "Executes immediately at best price. Pays taker fee."
+                    : "Waits for your target price. Pays lower maker fee."}
+                </div>
+                {orderType === "market" ? (
+                  <Slider
+                    label="Taker Fee Rate"
+                    value={feeRate}
+                    onChange={setFeeRate}
+                    min={0}
+                    max={0.2}
+                    step={0.005}
+                    unit="%"
+                    color={C.purple}
+                  />
+                ) : (
+                  <Slider
+                    label="Maker Fee Rate"
+                    value={makerFeeRate}
+                    onChange={setMakerFeeRate}
+                    min={0}
+                    max={0.1}
+                    step={0.005}
+                    unit="%"
+                    color={C.purple}
+                  />
+                )}
                 <Slider
                   label="Maintenance Margin Rate"
                   value={mmr}
@@ -1873,6 +1955,7 @@ export default function MarginTradingSimulator() {
                 />
                 <StatRow
                   items={[
+                    { label: "Fee Rate", val: `${activeFeeRate}%` },
                     { label: "Entry Fee", val: fmt(r.entryFee, 2) },
                     { label: "Exit Fee", val: fmt(r.exitFee, 2) },
                     { label: "Maint. Margin", val: fmt(r.maintenanceMargin) },
@@ -1895,7 +1978,7 @@ export default function MarginTradingSimulator() {
                     padding: "8px 18px",
                     background: C.darkBg,
                     borderRadius: 20,
-                    border: `1px solid ${C.cardBorder}`,
+                    border: `1px solid ${r.canOpen ? C.cardBorder : C.red}`,
                     ...mono,
                     fontSize: 14,
                   }}
@@ -1918,7 +2001,7 @@ export default function MarginTradingSimulator() {
                   </span>
                   <span style={{ color: C.dim }}>•</span>
                   <span style={{ color: C.purple, fontWeight: 700 }}>
-                    {feeRate}%
+                    {orderType === "market" ? "⚡" : "📋"} {activeFeeRate}%
                   </span>
                 </div>
               </div>
@@ -2110,7 +2193,7 @@ export default function MarginTradingSimulator() {
                   Pos Size = {fmt(clampedMargin)} × {leverage}x ={" "}
                   <span style={{ color: C.text }}>{fmt(r.positionSize)}</span>
                   <br />
-                  Entry Fee = {fmt(r.positionSize)} × {feeRate}% ={" "}
+                  Entry Fee = {fmt(r.positionSize)} × {activeFeeRate}% ={" "}
                   <span style={{ color: C.purple }}>{fmt(r.entryFee, 2)}</span>
                   <br />
                   Init Margin = {fmt(r.positionSize)}/{leverage} +{" "}
@@ -2185,7 +2268,7 @@ export default function MarginTradingSimulator() {
                   direction,
                   "isolated",
                   wallet,
-                  feeRate,
+                  activeFeeRate,
                   mmr,
                 );
                 const cross = calcResults(
@@ -2196,13 +2279,19 @@ export default function MarginTradingSimulator() {
                   direction,
                   "cross",
                   wallet,
-                  feeRate,
+                  activeFeeRate,
                   mmr,
                 );
                 const rows = [
                   ["Eff. Margin", fmt(clampedMargin), fmt(wallet)],
                   ["Liq Price", fmt(iso.liqPrice), fmt(cross.liqPrice)],
                   ["Max Loss", fmt(clampedMargin), fmt(wallet)],
+                  ["Order Cost", fmt(iso.orderCost), fmt(cross.orderCost)],
+                  [
+                    "Can Open?",
+                    iso.canOpen ? "Yes" : "NO",
+                    cross.canOpen ? "Yes" : "NO",
+                  ],
                   [
                     "Liquidated?",
                     iso.isLiquidated ? "YES" : "No",
@@ -2254,9 +2343,9 @@ export default function MarginTradingSimulator() {
                               color:
                                 j === 0
                                   ? C.muted
-                                  : cell === "YES"
+                                  : cell === "YES" || cell === "NO"
                                     ? C.red
-                                    : cell === "No"
+                                    : cell === "No" || cell === "Yes"
                                       ? C.green
                                       : C.text,
                               fontWeight: j === 0 ? 400 : 600,
