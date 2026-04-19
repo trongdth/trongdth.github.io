@@ -128,7 +128,7 @@ const concepts = [
       {
         label: "Exit Fee (Short)",
         detail:
-          "Exit Fee = Position Value × (1 + 1/Leverage) × Fee Rate. Higher because exchange hedges against price rise.",
+          "Exit Fee = Position Value × (1 + 1/Leverage) × Fee Rate. Higher because worst-case price rises increase closing value, so exchange pre-reserves a larger fee upfront.",
         icon: "⚠️",
       },
     ],
@@ -188,20 +188,40 @@ const concepts = [
       {
         label: "Isolated Long",
         detail: "Liq Price = Entry × (1 − 1/Leverage + MMR)",
-        icon: "📊",
+        icon: "🔒",
       },
       {
         label: "Isolated Short",
         detail: "Liq Price = Entry × (1 + 1/Leverage + MMR)",
-        icon: "📊",
+        icon: "🔒",
+      },
+      {
+        label: "Cross Long",
+        detail:
+          "Liq Price = (Entry − Margin / Amount) / (1 − MMR − Fee Rate). Margin = (Wallet + All Unrealized PnL) − This Position's PnL − Other Positions' Maintenance Margins.",
+        icon: "🌐",
+      },
+      {
+        label: "Cross Short",
+        detail:
+          "Liq Price = (Entry + Margin / Amount) / (1 + MMR + Fee Rate). Same Margin calc — it's the effective buffer left for THIS position after reserving what other positions need.",
+        icon: "🌐",
       },
     ],
     example: {
-      title: "Example — Long BTC $70k, 10x, MMR 0.5%",
+      title: "Example — Long 1 BTC at $70k, MMR 0.5%, Fee 0.075%",
       lines: [
-        "Liq = $70,000 × (1 - 1/10 + 0.5%) = $70,000 × 0.905 = $63,350",
-        "Without MMR: $70,000 × 0.9 = $63,000 (less accurate)",
-        "The MMR makes liq price slightly HIGHER = more dangerous",
+        "── Isolated (10x, margin = $7,000) ──",
+        "Liq = $70,000 × (1 − 1/10 + 0.5%) = $70,000 × 0.905 = $63,350",
+        "",
+        "── Cross (wallet = $10,000, no other positions) ──",
+        "Margin available = $10,000 (entire wallet backs this position)",
+        "Numerator = $70,000 − ($10,000 / 1) = $60,000",
+        "Denominator = 1 − (0.5% + 0.075%) = 0.99425",
+        "Liq = $60,000 / 0.99425 = $60,347",
+        "",
+        "Cross liq ($60,347) is much lower than Isolated ($63,350)",
+        "→ Cross gives more room, but risks entire $10k wallet if hit",
       ],
     },
   },
