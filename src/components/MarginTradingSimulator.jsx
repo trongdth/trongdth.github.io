@@ -371,7 +371,7 @@ function ConceptCard({ concept, index }) {
       >
         <span
           style={{
-            fontSize: 17,
+            fontSize: 19,
             fontWeight: 700,
             color: concept.color,
             ...mono,
@@ -1558,89 +1558,88 @@ export default function MarginTradingSimulator() {
         ::-webkit-scrollbar-thumb { background: ${C.dim}; border-radius: 3px; }
       `}</style>
 
-      <div
-        style={{
-          padding: "28px 24px 20px",
-          background: `linear-gradient(135deg, ${C.darkBg}, ${C.bg})`,
-          borderBottom: `1px solid ${C.cardBorder}`,
-          marginBottom: 24,
-        }}
-      >
+      <div style={{ maxWidth: 760, margin: "0 auto", padding: "0 20px" }}>
         <div
           style={{
-            fontSize: 13,
-            color: C.accent,
-            ...mono,
-            letterSpacing: 3,
-            marginBottom: 8,
-            textTransform: "uppercase",
+            padding: "28px 0 20px",
+            borderBottom: `1px solid ${C.cardBorder}`,
+            marginBottom: 24,
           }}
         >
-          Margin Trading Academy
-        </div>
-        <h1
-          style={{
-            fontSize: 24,
-            fontWeight: 800,
-            color: C.text,
-            margin: 0,
-            ...mono,
-            lineHeight: 1.2,
-          }}
-        >
-          Long · Short · Liquidation · PnL
-        </h1>
-        <p
-          style={{
-            color: C.muted,
-            fontSize: 15,
-            marginTop: 8,
-            marginBottom: 0,
-            lineHeight: 1.5,
-          }}
-        >
-          Interactive simulator with fees, MMR, and realized PnL
-        </p>
-      </div>
-
-      <div
-        style={{
-          display: "flex",
-          gap: 0,
-          margin: "0 20px 24px",
-          border: `1px solid ${C.cardBorder}`,
-          borderRadius: 12,
-          overflow: "hidden",
-        }}
-      >
-        {[
-          { key: "learn", label: "📚 Learn" },
-          { key: "sim", label: "🎮 Single Pos" },
-          { key: "multi", label: "🌐 Multi-Pos" },
-        ].map((t, i, arr) => (
-          <button
-            key={t.key}
-            onClick={() => setTab(t.key)}
+          <div
             style={{
-              flex: 1,
-              padding: "13px 10px",
-              background: tab === t.key ? `${C.accent}12` : "transparent",
-              color: tab === t.key ? C.accent : C.muted,
-              border: "none",
-              fontWeight: 700,
-              fontSize: 14,
-              cursor: "pointer",
+              fontSize: 13,
+              color: C.accent,
               ...mono,
-              borderRight:
-                i < arr.length - 1 ? `1px solid ${C.cardBorder}` : "none",
+              letterSpacing: 3,
+              marginBottom: 8,
+              textTransform: "uppercase",
             }}
           >
-            {t.label}
-          </button>
-        ))}
-      </div>
+            Margin Trading Academy
+          </div>
+          <h1
+            style={{
+              fontSize: 28,
+              fontWeight: 800,
+              color: C.text,
+              margin: 0,
+              ...mono,
+              lineHeight: 1.2,
+            }}
+          >
+            Long · Short · Liquidation · PnL
+          </h1>
+          <p
+            style={{
+              color: C.muted,
+              fontSize: 15,
+              marginTop: 8,
+              marginBottom: 0,
+              lineHeight: 1.5,
+            }}
+          >
+            Interactive simulator with fees, MMR, and realized PnL
+          </p>
+        </div>
 
-      <div style={{ padding: "0 20px", maxWidth: 700, margin: "0 auto" }}>
+        <div
+          style={{
+            display: "flex",
+            gap: 0,
+            marginBottom: 24,
+            border: `1px solid ${C.cardBorder}`,
+            borderRadius: 12,
+            overflow: "hidden",
+          }}
+        >
+          {[
+            { key: "learn", label: "📚 Learn" },
+            { key: "sim", label: "🎮 Single Pos" },
+            { key: "multi", label: "🌐 Multi-Pos" },
+          ].map((t, i, arr) => (
+            <button
+              key={t.key}
+              onClick={() => setTab(t.key)}
+              style={{
+                flex: 1,
+                padding: "16px 10px",
+                background: tab === t.key ? `${C.accent}12` : "transparent",
+                color: tab === t.key ? C.accent : C.muted,
+                border: "none",
+                fontWeight: 700,
+                fontSize: 15,
+                cursor: "pointer",
+                ...mono,
+                borderRight:
+                  i < arr.length - 1 ? `1px solid ${C.cardBorder}` : "none",
+              }}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+
         {/* LEARN */}
         {tab === "learn" && (
           <div>
