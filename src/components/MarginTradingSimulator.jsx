@@ -122,7 +122,7 @@ const concepts = [
       },
       {
         label: "Exit Fee (Long)",
-        detail: "Exit Fee = Position Value × Fee Rate. Same as entry.",
+        detail: "Exit Fee = Position Value × Fee Rate. Same as entry fee.",
         icon: "⬅️",
       },
       {
@@ -133,12 +133,12 @@ const concepts = [
       },
     ],
     example: {
-      title: "Example — Long 1 BTC at $70k, 10x, 0.075% fee",
+      title: "Example — BTC at $60,000, Margin $1,000, 10x",
       lines: [
-        "Position Value = $70,000",
-        "Entry Fee = $70,000 × 0.075% = $52.50",
-        "Exit Fee (Long) = $70,000 × 0.075% = $52.50",
-        "Exit Fee (Short) = $70,000 × (1 + 1/10) × 0.075% = $57.75",
+        "Position Value = $1,000 × 10 = $10,000 (0.1667 BTC)",
+        "Entry Fee = $10,000 × 0.075% = $7.50",
+        "Exit Fee (Long) = $10,000 × 0.075% = $7.50",
+        "Exit Fee (Short) = $10,000 × (1 + 1/10) × 0.075% = $8.25",
       ],
     },
   },
@@ -149,29 +149,38 @@ const concepts = [
       {
         label: "Initial Margin (IM)",
         detail:
-          "IM = Position Value / Leverage + Entry Fee. The actual cost to open.",
+          "IM = (Position Value / Leverage) + Exit Fee. Reserves margin to open plus estimated closing cost.",
         icon: "📐",
       },
       {
         label: "Maintenance Margin (MM)",
         detail:
-          "MM = Position Value × MMR%. The minimum to keep position alive. Usually 0.4-0.5%.",
+          "MM = (Position Value × MMR%) + Exit Fee. The minimum to keep position alive.",
         icon: "🔻",
       },
       {
         label: "Order Cost",
         detail:
-          "Order Cost = Initial Margin + Entry Fee + Exit Fee. Total wallet balance needed to place order.",
+          "Order Cost = Initial Margin + Entry Fee. Total wallet balance needed to place order.",
         icon: "💵",
       },
     ],
     example: {
-      title: "Example — Long 1 BTC at $70k, 10x, 0.075% fee",
+      title: "Example — BTC at $60,000, Margin $1,000, 10x, 0.075% fee",
       lines: [
-        "IM = $70,000 / 10 + $52.50 = $7,052.50",
-        "MM = $70,000 × 0.5% = $350",
-        "Order Cost = $7,052.50 + $52.50 + $52.50 = $7,157.50",
-        "→ Your wallet needs ≥ $7,157.50 to open this position",
+        "Position Value = $1,000 × 10 = $10,000 (0.1667 BTC)",
+        "",
+        "── Long ──",
+        "Entry Fee = $10,000 × 0.075% = $7.50",
+        "Exit Fee = $10,000 × 0.075% = $7.50",
+        "IM = ($10,000 / 10) + $7.50 = $1,007.50",
+        "Order Cost = $1,007.50 + $7.50 = $1,015.00",
+        "",
+        "── Short ──",
+        "Entry Fee = $10,000 × 0.075% = $7.50",
+        "Exit Fee = $10,000 × (1 + 1/10) × 0.075% = $8.25",
+        "IM = ($10,000 / 10) + $8.25 = $1,008.25",
+        "Order Cost = $1,008.25 + $7.50 = $1,015.75",
       ],
     },
   },
@@ -182,46 +191,55 @@ const concepts = [
       {
         label: "What is it?",
         detail:
-          "When losses eat your margin down to Maintenance Margin level, exchange FORCE-CLOSES your position.",
+          "When your MMR (Maintenance Margin Ratio) falls to 100% or below, exchange triggers liquidation. The position is closed at the Bankruptcy Price.",
         icon: "⚠️",
       },
       {
-        label: "Isolated Long",
-        detail: "Liq Price = Entry Price × (1 − 1/Leverage + MMR)",
+        label: "MMR (trigger)",
+        detail:
+          "Isolated: MMR = Position Margin / Maintenance Margin. Cross: MMR = Account Margin / Total Maintenance Margin. Liquidation triggers when MMR ≤ 100%.",
+        icon: "📊",
+      },
+      {
+        label: "Est. Liq Price",
+        detail:
+          "The price where MMR hits 100%. This is where liquidation STARTS. Isolated: Entry − (Margin − MM) / Qty. Cross: Entry − (Wallet − MM) / Qty. (flip sign for Short)",
+        icon: "🎯",
+      },
+      {
+        label: "Bankruptcy Price",
+        detail:
+          "The price where margin = $0. This is the worst-case closing price. Exchange tries to close BETWEEN Est. Liq Price and Bankruptcy Price. Difference goes to Insurance Fund.",
+        icon: "💀",
+      },
+      {
+        label: "Isolated Bankruptcy",
+        detail:
+          "(Entry Price − IM / Qty) / (1 − 0.075%). Where IM = PosValue/Leverage + Exit Fee.",
         icon: "🔒",
       },
       {
-        label: "Isolated Short",
-        detail: "Liq Price = Entry Price × (1 + 1/Leverage + MMR)",
-        icon: "🔒",
-      },
-      {
-        label: "Cross Long",
+        label: "Cross Bankruptcy",
         detail:
-          "Liq Price = (Entry Price − Margin / Amount) / (1 − MMR − Fee Rate). Margin = (Wallet Balance + All Unrealized PnL) − This Position's PnL − Other Positions' Maintenance Margins.",
-        icon: "🌐",
-      },
-      {
-        label: "Cross Short",
-        detail:
-          "Liq Price = (Entry Price + Margin / Amount) / (1 + MMR + Fee Rate). Same Margin calc — it's the effective buffer left for THIS position after reserving what other positions need.",
+          "Mark Price × [1 − (MMR + 0.075%) × 100%] / (1 − 0.075%). Margin Ratio = 100% at trigger.",
         icon: "🌐",
       },
     ],
     example: {
-      title: "Example — Long 1 BTC at $70k, MMR 0.5%, Fee 0.075%",
+      title: "Example — Long 1 BTC at $60,000, Margin $6,000, 10x",
       lines: [
-        "── Isolated (10x, margin = $7,000) ──",
-        "Liq = $70,000 × (1 − 1/10 + 0.5%) = $70,000 × 0.905 = $63,350",
+        "MM = $60,000 × 0.5% + $4.50 = $304.50",
+        "IM = $6,000 + $4.50 = $6,004.50",
         "",
-        "── Cross (wallet = $10,000, no other positions) ──",
-        "Margin available = $10,000 (entire wallet backs this position)",
-        "Numerator = $70,000 − ($10,000 / 1) = $60,000",
-        "Denominator = 1 − (0.5% + 0.075%) = 0.99425",
-        "Liq = $60,000 / 0.99425 = $60,347",
+        "── Isolated ──",
+        "Est. Liq = $60,000 − ($6,000 − $304.50) / 1 = $54,304.50",
+        "Bankruptcy = ($60,000 − $6,004.50) / 0.99925 = $54,036",
+        "Gap = $268 → Insurance Fund if filled between these prices",
         "",
-        "Cross liq ($60,347) is much lower than Isolated ($63,350)",
-        "→ Cross gives more room, but risks entire $10k wallet if hit",
+        "── Cross (Wallet $10,000) ──",
+        "Est. Liq = $60,000 − ($10,000 − $304.50) / 1 = $50,304.50",
+        "Bankruptcy = $60,000 × 0.99425 / 0.99925 = $59,700",
+        "Cross bankruptcy is higher but wallet absorbs losses down to Est. Liq first",
       ],
     },
   },
@@ -249,21 +267,28 @@ const concepts = [
       },
     ],
     example: {
-      title: "Example — Short 1 BTC at $70k, 10x, Mark Price $65k, 0.075% fee",
+      title:
+        "Example — Short BTC at $60,000, Margin $1,000, 10x, Mark Price $55,000",
       lines: [
-        "Margin = $70,000 / 10 = $7,000",
-        "Unrealized PnL = ($70,000 − $65,000) × 1 = +$5,000",
-        "ROE = $5,000 / $7,000 × 100 = +71.4%",
+        "Position Value = $10,000 (0.1667 BTC)",
+        "Unrealized PnL = ($60,000 − $55,000) × 0.1667 = +$833.50",
+        "ROE = $833.50 / $1,000 × 100 = +83.3%",
         "",
-        "Entry Fee = $70,000 × 0.075% = $52.50",
-        "Exit Fee = $65,000 × 0.075% = $48.75",
-        "Realized PnL = $5,000 − $52.50 − $48.75 = +$4,898.75",
+        "Entry Fee = $10,000 × 0.075% = $7.50",
+        "Exit Fee = $10,000 × (1 + 1/10) × 0.075% = $8.25",
+        "Realized PnL = $833.50 − $7.50 − $8.25 = +$817.75",
       ],
     },
   },
 ];
 
-// ─── Calc Engine (with fees + MMR) ───
+// ─── Calc Engine (Gate.com exact formulas) ───
+// References:
+//   IM & Order Cost: https://www.gate.com/help/futures/futures/22156
+//   Maintenance Margin: https://www.gate.com/help/futures/futures/38042/maintenance-margin
+//   Liquidation: https://www.gate.com/help/futures/futures/22159/liquidation-process
+//   Perpetual Futures: https://www.gate.com/help/futures/futures-operation-tutorial/38050/what-are-perpetual-futures
+
 function calcResults(
   entry,
   current,
@@ -275,60 +300,75 @@ function calcResults(
   feeRate = 0.075,
   mmr = 0.5,
 ) {
-  const fr = feeRate / 100;
-  const mr = mmr / 100;
+  const fr = feeRate / 100; // fee rate as decimal
+  const mr = mmr / 100; // MMR as decimal
+  const liqFr = 0.075 / 100; // Gate.com liquidation fee rate is always 0.075%
   const positionSize = margin * leverage;
   const quantity = positionSize / entry;
 
-  // Fees
+  // ── Fees ──
   const entryFee = positionSize * fr;
-  const exitFeeAtCurrent =
-    direction === "short"
-      ? positionSize * (1 + 1 / leverage) * fr
-      : positionSize * fr;
-  const exitFeeAtEntry =
+  const exitFee =
     direction === "short"
       ? positionSize * (1 + 1 / leverage) * fr
       : positionSize * fr;
 
-  // Initial Margin & Order Cost
-  const initialMargin = positionSize / leverage + entryFee;
-  const maintenanceMargin = positionSize * mr;
-  const orderCost = initialMargin + entryFee + exitFeeAtEntry;
-
-  // Can open? Wallet must cover order cost
+  // ── IM, MM, Order Cost (Gate.com) ──
+  // IM = (Position Value / Leverage) + Exit Fee
+  // MM = Position Value × MMR + Exit Fee
+  // Order Cost = IM + Entry Fee
+  const initialMargin = positionSize / leverage + exitFee;
+  const maintenanceMargin = positionSize * mr + exitFee;
+  const orderCost = initialMargin + entryFee;
   const canOpen = walletBalance >= orderCost;
-  // PnL
+
+  // ── PnL ──
   const unrealizedPnl =
     direction === "long"
       ? quantity * (current - entry)
       : quantity * (entry - current);
-  const realizedPnl = unrealizedPnl - entryFee - exitFeeAtCurrent;
+  const realizedPnl = unrealizedPnl - entryFee - exitFee;
   const roe = (unrealizedPnl / margin) * 100;
 
-  // Liquidation (team doc formulas with MMR)
-  const effectiveMargin = marginMode === "cross" ? walletBalance : margin;
-  let liqPrice;
+  // ── Liquidation / Bankruptcy Price (Gate.com exact formulas) ──
+  let bankruptcyPrice;
+  let estLiqPrice; // Est. Liquidation Price = where MMR hits 100% (before bankruptcy)
+
   if (marginMode === "isolated") {
-    liqPrice =
+    // Bankruptcy Price (Gate.com Isolated):
+    const imPerUnit = initialMargin / quantity;
+    bankruptcyPrice =
       direction === "long"
-        ? entry * (1 - 1 / leverage + mr)
-        : entry * (1 + 1 / leverage + mr);
+        ? (entry - imPerUnit) / (1 - liqFr)
+        : (entry + imPerUnit) / (1 + liqFr);
+
+    // Est. Liquidation Price: where Position Margin Balance = Maintenance Margin
+    // Margin + Qty × (LiqPrice - Entry) = MM  →  LiqPrice = Entry - (Margin - MM) / Qty
+    estLiqPrice =
+      direction === "long"
+        ? entry - (margin - maintenanceMargin) / quantity
+        : entry + (margin - maintenanceMargin) / quantity;
   } else {
-    liqPrice =
+    // Bankruptcy Price (Gate.com Cross):
+    const marginRatio = 1.0;
+    bankruptcyPrice =
       direction === "long"
-        ? entry - effectiveMargin / quantity
-        : entry + effectiveMargin / quantity;
-    // Adjust for MMR+fees
-    liqPrice =
+        ? (entry * (1 - (mr + liqFr) * marginRatio)) / (1 - liqFr)
+        : (entry * (1 + (mr + liqFr) * marginRatio)) / (1 + liqFr);
+
+    // Est. Liquidation Price: where Account Balance = Total Maintenance Margin
+    // Wallet + Qty × (LiqPrice - Entry) = MM  →  LiqPrice = Entry - (Wallet - MM) / Qty
+    estLiqPrice =
       direction === "long"
-        ? liqPrice / (1 - (mr + fr))
-        : liqPrice / (1 + (mr + fr));
+        ? entry - (walletBalance - maintenanceMargin) / quantity
+        : entry + (walletBalance - maintenanceMargin) / quantity;
   }
-  liqPrice = Math.max(0, liqPrice);
+  bankruptcyPrice = Math.max(0, bankruptcyPrice);
+  estLiqPrice = Math.max(0, estLiqPrice);
 
   const isLiquidated =
-    direction === "long" ? current <= liqPrice : current >= liqPrice;
+    direction === "long" ? current <= estLiqPrice : current >= estLiqPrice;
+  const effectiveMargin = marginMode === "cross" ? walletBalance : margin;
   const marginLeft = effectiveMargin + unrealizedPnl;
 
   return {
@@ -337,13 +377,15 @@ function calcResults(
     unrealizedPnl,
     realizedPnl,
     roe,
-    liqPrice,
+    liqPrice: estLiqPrice,
+    estLiqPrice,
+    bankruptcyPrice,
     isLiquidated,
     effectiveMargin,
     marginLeft,
     canOpen,
     entryFee,
-    exitFee: exitFeeAtCurrent,
+    exitFee,
     initialMargin,
     maintenanceMargin,
     orderCost,
@@ -978,14 +1020,15 @@ function MultiPositionSim() {
   const totalPnl = positions.reduce((s, p) => s + getPnl(p), 0);
   const available = wallet - totalUsed + Math.min(0, totalPnl);
 
-  // Estimate order cost for new position (using 0.075% taker fee as default for multi-pos)
+  // Estimate order cost for new position (Gate.com formula: OrderCost = IM + EntryFee, where IM = PosSize/Lev + ExitFee)
   const newPosSize = newMargin * newLev;
-  const newFee = newPosSize * 0.00075;
-  const newOrderCost =
-    newPosSize / newLev +
-    newFee +
-    newFee +
-    (newDir === "short" ? (newPosSize / newLev) * 0.00075 : 0);
+  const newEntryFee = newPosSize * 0.00075;
+  const newExitFee =
+    newDir === "short"
+      ? newPosSize * (1 + 1 / newLev) * 0.00075
+      : newPosSize * 0.00075;
+  const newInitMargin = newPosSize / newLev + newExitFee;
+  const newOrderCost = newInitMargin + newEntryFee;
 
   const tryAdd = () => {
     setError("");
@@ -1367,9 +1410,10 @@ function MultiPositionSim() {
               <StatRow
                 items={[
                   { label: "Pos Size", val: fmt(newPosSize) },
+                  { label: "IM", val: fmt(newInitMargin, 2) },
                   {
                     label: "Order Cost",
-                    val: fmt(newOrderCost),
+                    val: fmt(newOrderCost, 2),
                     color: available >= newOrderCost ? undefined : C.red,
                   },
                   {
@@ -1377,6 +1421,16 @@ function MultiPositionSim() {
                     val: fmt(Math.max(0, available)),
                     color: available >= newOrderCost ? C.accent : C.red,
                   },
+                ]}
+              />
+              <StatRow
+                items={[
+                  {
+                    label: "Entry Fee",
+                    val: fmt(newEntryFee, 2),
+                    color: C.dim,
+                  },
+                  { label: "Exit Fee", val: fmt(newExitFee, 2), color: C.dim },
                   {
                     label: "Status",
                     val: available >= newOrderCost ? "OK" : "BLOCKED",
@@ -1955,12 +2009,40 @@ export default function MarginTradingSimulator() {
                 />
                 <StatRow
                   items={[
-                    { label: "Fee Rate", val: `${activeFeeRate}%` },
+                    { label: "Trading Fee", val: `${activeFeeRate}%` },
+                    { label: "Liq Fee", val: "0.075%", color: C.dim },
                     { label: "Entry Fee", val: fmt(r.entryFee, 2) },
                     { label: "Exit Fee", val: fmt(r.exitFee, 2) },
-                    { label: "Maint. Margin", val: fmt(r.maintenanceMargin) },
                   ]}
                 />
+                <StatRow
+                  items={[
+                    { label: "Maint. Margin", val: fmt(r.maintenanceMargin) },
+                    {
+                      label: "Est. Liq Price",
+                      val: fmt(r.estLiqPrice),
+                      color: C.orange,
+                    },
+                    {
+                      label: "Bankruptcy Price",
+                      val: fmt(r.bankruptcyPrice),
+                      color: C.red,
+                    },
+                  ]}
+                />
+                <div
+                  style={{
+                    marginTop: 8,
+                    fontSize: 12,
+                    color: C.dim,
+                    ...mono,
+                    lineHeight: 1.6,
+                  }}
+                >
+                  Est. Liq Price = where MMR hits 100% (liquidation starts).
+                  Bankruptcy Price = where margin = $0 (worst-case close).
+                  Exchange closes between these two prices.
+                </div>
               </Sub>
 
               <div
@@ -2162,7 +2244,20 @@ export default function MarginTradingSimulator() {
                 <StatRow
                   items={[
                     { label: "Pos Size", val: fmt(r.positionSize) },
-                    { label: "Liq Price", val: fmt(r.liqPrice), color: C.red },
+                    {
+                      label: "Est. Liq Price",
+                      val: fmt(r.estLiqPrice),
+                      color: C.orange,
+                    },
+                    {
+                      label: "Bankruptcy Price",
+                      val: fmt(r.bankruptcyPrice),
+                      color: C.red,
+                    },
+                  ]}
+                />
+                <StatRow
+                  items={[
                     {
                       label: "Entry Fee",
                       val: fmt(r.entryFee, 2),
@@ -2173,6 +2268,7 @@ export default function MarginTradingSimulator() {
                       val: fmt(r.exitFee, 2),
                       color: C.purple,
                     },
+                    { label: "Order Cost", val: fmt(r.orderCost, 2) },
                   ]}
                 />
 
@@ -2188,52 +2284,52 @@ export default function MarginTradingSimulator() {
                     color: C.muted,
                   }}
                 >
-                  <span style={{ color: C.accent }}>// Breakdown</span>
+                  <span style={{ color: C.accent }}>
+                    // Breakdown (Gate.com formulas)
+                  </span>
                   <br />
                   Pos Size = {fmt(clampedMargin)} × {leverage}x ={" "}
                   <span style={{ color: C.text }}>{fmt(r.positionSize)}</span>
                   <br />
-                  Entry Fee = {fmt(r.positionSize)} × {activeFeeRate}% ={" "}
-                  <span style={{ color: C.purple }}>{fmt(r.entryFee, 2)}</span>
+                  Qty = {fmt(r.positionSize)} / {fmt(entry)} ={" "}
+                  <span style={{ color: C.text }}>{r.quantity.toFixed(4)}</span>
                   <br />
-                  Init Margin = {fmt(r.positionSize)}/{leverage} +{" "}
-                  {fmt(r.entryFee, 2)} ={" "}
+                  IM = {fmt(r.positionSize)}/{leverage} + {fmt(r.exitFee, 2)} ={" "}
                   <span style={{ color: C.text }}>
                     {fmt(r.initialMargin, 2)}
                   </span>
                   <br />
-                  Maint Margin = {fmt(r.positionSize)} × {mmr}% ={" "}
+                  MM = {fmt(r.positionSize)} × {mmr}% + {fmt(r.exitFee, 2)} ={" "}
                   <span style={{ color: C.text }}>
                     {fmt(r.maintenanceMargin, 2)}
                   </span>
                   <br />
-                  Unrealized = {r.quantity.toFixed(4)} × (
-                  {direction === "long"
-                    ? `${fmt(current)} − ${fmt(entry)}`
-                    : `${fmt(entry)} − ${fmt(current)}`}
-                  ) ={" "}
-                  <span
-                    style={{ color: r.unrealizedPnl >= 0 ? C.green : C.red }}
-                  >
-                    {fmtSign(r.unrealizedPnl, 2)}
-                  </span>
+                  <span style={{ color: C.orange }}>Est. Liq</span> ={" "}
+                  {fmt(entry)} {direction === "long" ? "−" : "+"} (
+                  {fmt(marginMode === "cross" ? wallet : clampedMargin)} −{" "}
+                  {fmt(r.maintenanceMargin)}) / {r.quantity.toFixed(4)} ={" "}
+                  <span style={{ color: C.orange }}>{fmt(r.estLiqPrice)}</span>
                   <br />
-                  <span style={{ color: C.green }}>Realized</span> ={" "}
-                  {fmt(Math.abs(r.unrealizedPnl), 2)} − {fmt(r.entryFee, 2)} −{" "}
-                  {fmt(r.exitFee, 2)} ={" "}
-                  <span style={{ color: r.realizedPnl >= 0 ? C.green : C.red }}>
-                    {fmtSign(r.realizedPnl, 2)}
-                  </span>
-                  <br />
-                  Liq Price ({marginMode}) ={" "}
-                  <span style={{ color: C.red }}>{fmt(r.liqPrice)}</span>
-                  {marginMode === "isolated" && (
+                  <span style={{ color: C.red }}>Bankruptcy</span> ={" "}
+                  {marginMode === "isolated" ? (
                     <>
-                      {" "}
-                      = {fmt(entry)} × (1 {direction === "long" ? "−" : "+"} 1/
-                      {leverage} + {mmr}%)
+                      <span style={{ color: C.text }}>
+                        ({fmt(entry)} {direction === "long" ? "−" : "+"}{" "}
+                        {fmt(r.initialMargin, 2)}/{r.quantity.toFixed(4)}) / (1{" "}
+                        {direction === "long" ? "−" : "+"} 0.075%)
+                      </span>
                     </>
-                  )}
+                  ) : (
+                    <>
+                      <span style={{ color: C.text }}>
+                        {fmt(entry)} × [1 {direction === "long" ? "−" : "+"} (
+                        {mmr}% + 0.075%)] / (1{" "}
+                        {direction === "long" ? "−" : "+"} 0.075%)
+                      </span>
+                    </>
+                  )}{" "}
+                  ={" "}
+                  <span style={{ color: C.red }}>{fmt(r.bankruptcyPrice)}</span>
                 </div>
               </div>
             </div>
@@ -2284,7 +2380,16 @@ export default function MarginTradingSimulator() {
                 );
                 const rows = [
                   ["Eff. Margin", fmt(clampedMargin), fmt(wallet)],
-                  ["Liq Price", fmt(iso.liqPrice), fmt(cross.liqPrice)],
+                  [
+                    "Est. Liq Price",
+                    fmt(iso.estLiqPrice),
+                    fmt(cross.estLiqPrice),
+                  ],
+                  [
+                    "Bankruptcy Price",
+                    fmt(iso.bankruptcyPrice),
+                    fmt(cross.bankruptcyPrice),
+                  ],
                   ["Max Loss", fmt(clampedMargin), fmt(wallet)],
                   ["Order Cost", fmt(iso.orderCost), fmt(cross.orderCost)],
                   [
