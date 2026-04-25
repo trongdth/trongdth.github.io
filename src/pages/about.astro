@@ -2,19 +2,40 @@
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
+import SchemaOrg from '../components/SchemaOrg.astro';
 import { SITE_TITLE, SOCIAL_LINKS } from '../consts';
+import {
+	buildProfilePageSchema,
+	buildPersonSchema,
+	buildBreadcrumbSchema,
+} from '../lib/schema-helpers';
 
 const skills = [
 	{ category: 'Leadership', items: ['Team Management', 'Strategy', 'Product Vision', 'Mentoring'] },
 	{ category: 'Technical', items: ['System Architecture', 'Cloud Infrastructure', 'DevOps', 'Security'] },
 	{ category: 'Development', items: ['Full-Stack', 'Mobile', 'Blockchain', 'AI/ML'] },
 ];
+
+const aboutSchema = {
+	'@context': 'https://schema.org',
+	'@graph': [
+		buildProfilePageSchema(),
+		buildPersonSchema(),
+	],
+};
+
+const breadcrumbSchema = buildBreadcrumbSchema([
+	{ name: 'Home', url: 'https://code4food.work' },
+	{ name: 'About', url: 'https://code4food.work/about' },
+]);
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
 		<BaseHead title={`About | ${SITE_TITLE}`} description="About Trong Dinh - CTO & Technology Leader" />
+		<SchemaOrg schema={aboutSchema} />
+		<SchemaOrg schema={breadcrumbSchema} />
 	</head>
 	<body>
 		<Header />

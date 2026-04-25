@@ -3,16 +3,53 @@ import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import PomodoroApp from '../components/PomodoroApp';
+import SchemaOrg from '../components/SchemaOrg.astro';
 import { SITE_TITLE } from '../consts';
+import {
+	buildWebApplicationSchema,
+	buildBreadcrumbSchema,
+	buildFAQSchema,
+} from '../lib/schema-helpers';
+
+const breadcrumbSchema = buildBreadcrumbSchema([
+	{ name: 'Home', url: 'https://code4food.work' },
+	{ name: 'Pomodoro Timer', url: 'https://code4food.work/pomodoro' },
+]);
+
+const webAppSchema = buildWebApplicationSchema();
+
+const faqItems = [
+	{
+		question: 'What is the Pomodoro Technique?',
+		answer: 'The Pomodoro Technique is a time management method developed by Francesco Cirillo in the late 1980s. It uses a timer to break work into focused intervals (traditionally 25 minutes), separated by short breaks. Each interval is called a "pomodoro" (Italian for tomato). After completing four pomodoros, you take a longer break of 15–30 minutes.',
+	},
+	{
+		question: 'How long is a Pomodoro session?',
+		answer: 'A standard Pomodoro session is 25 minutes of focused work followed by a 5-minute short break. After four sessions, a longer break of 15–30 minutes is recommended. However, you can customize these durations in our timer to match your personal productivity rhythm.',
+	},
+	{
+		question: 'What are the benefits of the Pomodoro Technique?',
+		answer: 'The Pomodoro Technique helps improve focus and concentration, reduces mental fatigue, increases accountability and awareness of how you spend your time, provides a structured approach to tackling large tasks, and helps combat procrastination by making work feel more manageable in short bursts.',
+	},
+	{
+		question: 'Is this Pomodoro timer free to use?',
+		answer: 'Yes, this Pomodoro timer is completely free. It runs entirely in your browser with no account needed. Your data is stored locally on your device for privacy.',
+	},
+];
+
+const faqSchema = buildFAQSchema(faqItems);
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
 		<BaseHead
-			title={`Pomodoro Timer — ${SITE_TITLE}`}
-			description="Boost your productivity with the Pomodoro Technique. Customizable focus intervals, task tracking, and productivity analytics."
+			title={`Free Online Pomodoro Timer — ${SITE_TITLE}`}
+			description="Free online Pomodoro timer to boost your productivity. Customizable focus intervals, task tracking, productivity analytics, and browser notifications — all in your browser, no sign-up required."
 		/>
+		<SchemaOrg schema={breadcrumbSchema} />
+		<SchemaOrg schema={webAppSchema} />
+		<SchemaOrg schema={faqSchema} />
 	</head>
 	<body>
 		<Header />
@@ -23,6 +60,60 @@ import { SITE_TITLE } from '../consts';
 				<p class="pomodoro-subtitle">Focus. Break. Repeat. Master your productivity rhythm.</p>
 			</div>
 			<PomodoroApp client:load />
+
+			<noscript>
+				<div class="noscript-message">
+					<p>This Pomodoro Timer requires JavaScript to run. Please enable JavaScript in your browser to use the timer.</p>
+				</div>
+			</noscript>
+
+			<!-- Learn More accordion with SEO content -->
+			<section class="seo-section">
+				<details class="learn-more-accordion">
+					<summary class="learn-more-trigger">
+						<span>Learn More About the Pomodoro Technique</span>
+						<svg class="chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+					</summary>
+					<div class="learn-more-content">
+						<h2>What is the Pomodoro Technique?</h2>
+						<p>
+							The Pomodoro Technique is a proven time management method that uses timed intervals to boost focus and productivity. Developed by Francesco Cirillo, it breaks work into manageable sessions — traditionally 25 minutes of deep focus followed by a 5-minute break.
+						</p>
+
+						<h3>How to Use This Timer</h3>
+						<ol>
+							<li><strong>Set your task</strong> — Add a task in the Tasks tab so you know exactly what to focus on.</li>
+							<li><strong>Start the timer</strong> — Hit Start and commit to focused work until the timer rings.</li>
+							<li><strong>Take a short break</strong> — Rest for 5 minutes. Stretch, hydrate, or look away from the screen.</li>
+							<li><strong>Repeat</strong> — After 4 pomodoros, take a longer 15–30 minute break to recharge.</li>
+						</ol>
+
+						<h3>Features</h3>
+						<ul>
+							<li><strong>Customizable durations</strong> — Adjust focus, short break, and long break times to suit your workflow.</li>
+							<li><strong>Task tracking</strong> — Create tasks and track how many pomodoros each one takes.</li>
+							<li><strong>Productivity analytics</strong> — View daily stats, focus minutes, and session history.</li>
+							<li><strong>Browser notifications</strong> — Get notified when a session ends so you never miss a break.</li>
+							<li><strong>Data export</strong> — Download your productivity data as JSON for personal analysis.</li>
+							<li><strong>No sign-up required</strong> — Everything runs locally in your browser. Your data stays private.</li>
+						</ul>
+					</div>
+				</details>
+			</section>
+
+			<!-- Collapsible FAQ Section -->
+			<section class="faq-section">
+				<h2 class="faq-title">Frequently Asked Questions</h2>
+				{faqItems.map((item) => (
+					<details class="faq-item">
+						<summary class="faq-question">
+							<span>{item.question}</span>
+							<svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+						</summary>
+						<p class="faq-answer">{item.answer}</p>
+					</details>
+				))}
+			</section>
 		</main>
 		<Footer />
 	</body>
@@ -53,8 +144,161 @@ import { SITE_TITLE } from '../consts';
 		font-size: 1.1rem;
 		font-family: 'JetBrains Mono', monospace;
 	}
+
+	/* Noscript */
+	.noscript-message {
+		text-align: center;
+		padding: 2em;
+		margin: 2em auto;
+		max-width: 500px;
+		background: var(--bg-secondary);
+		border: 1px solid var(--border-color);
+		border-radius: 12px;
+		color: var(--text-secondary);
+	}
+
+	/* Learn More Accordion */
+	.seo-section {
+		max-width: 700px;
+		margin: 3em auto 0;
+		padding: 0 1em;
+	}
+
+	.learn-more-accordion {
+		background: var(--bg-secondary);
+		border: 1px solid var(--border-color);
+		border-radius: 12px;
+		overflow: hidden;
+	}
+
+	.learn-more-trigger {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 1.25em 1.5em;
+		cursor: pointer;
+		font-weight: 600;
+		font-size: 1rem;
+		color: var(--text-primary);
+		list-style: none;
+		transition: background 0.2s;
+	}
+
+	.learn-more-trigger::-webkit-details-marker {
+		display: none;
+	}
+
+	.learn-more-trigger:hover {
+		background: var(--bg-tertiary);
+	}
+
+	.learn-more-trigger .chevron {
+		transition: transform 0.3s ease;
+		flex-shrink: 0;
+		color: var(--text-muted);
+	}
+
+	.learn-more-accordion[open] .learn-more-trigger .chevron {
+		transform: rotate(180deg);
+	}
+
+	.learn-more-content {
+		padding: 0 1.5em 1.5em;
+		color: var(--text-secondary);
+		line-height: 1.7;
+	}
+
+	.learn-more-content h2 {
+		font-size: 1.25rem;
+		color: var(--text-primary);
+		margin-bottom: 0.75em;
+	}
+
+	.learn-more-content h3 {
+		font-size: 1.05rem;
+		color: var(--text-primary);
+		margin-top: 1.5em;
+		margin-bottom: 0.5em;
+	}
+
+	.learn-more-content p {
+		margin-bottom: 1em;
+	}
+
+	.learn-more-content ul,
+	.learn-more-content ol {
+		padding-left: 1.5em;
+		margin-bottom: 1em;
+	}
+
+	.learn-more-content li {
+		margin-bottom: 0.5em;
+	}
+
+	/* FAQ Section */
+	.faq-section {
+		max-width: 700px;
+		margin: 2em auto 4em;
+		padding: 0 1em;
+	}
+
+	.faq-title {
+		text-align: center;
+		margin-bottom: 1.5em;
+		font-size: 1.5rem;
+	}
+
+	.faq-item {
+		background: var(--bg-secondary);
+		border: 1px solid var(--border-color);
+		border-radius: 10px;
+		margin-bottom: 0.75em;
+		overflow: hidden;
+	}
+
+	.faq-question {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 1em 1.25em;
+		cursor: pointer;
+		font-weight: 600;
+		font-size: 0.95rem;
+		color: var(--text-primary);
+		list-style: none;
+		transition: background 0.2s;
+	}
+
+	.faq-question::-webkit-details-marker {
+		display: none;
+	}
+
+	.faq-question:hover {
+		background: var(--bg-tertiary);
+	}
+
+	.faq-question .chevron {
+		transition: transform 0.3s ease;
+		flex-shrink: 0;
+		color: var(--text-muted);
+	}
+
+	.faq-item[open] .faq-question .chevron {
+		transform: rotate(180deg);
+	}
+
+	.faq-answer {
+		padding: 0 1.25em 1.25em;
+		color: var(--text-secondary);
+		line-height: 1.7;
+		font-size: 0.95rem;
+	}
+
 	@media (max-width: 640px) {
 		.pomodoro-page-header h1 { font-size: 1.75rem; }
 		.pomodoro-subtitle { font-size: 0.9rem; }
+		.learn-more-trigger { padding: 1em 1.25em; font-size: 0.9rem; }
+		.faq-question { padding: 0.875em 1em; font-size: 0.9rem; }
+		.faq-answer { padding: 0 1em 1em; font-size: 0.9rem; }
 	}
 </style>

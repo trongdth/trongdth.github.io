@@ -10,15 +10,60 @@ import SubscribeForm from '../components/SubscribeForm.astro';
 import AdPlaceholder from '../components/AdPlaceholder.astro';
 import SocialShare from '../components/SocialShare.astro';
 import Comments from '../components/Comments';
+import SchemaOrg from '../components/SchemaOrg.astro';
+import {
+	buildBlogPostingSchema,
+	buildBreadcrumbSchema,
+	buildPersonSchema,
+	buildOrganizationSchema,
+} from '../lib/schema-helpers';
 
 type Props = CollectionEntry<'blog'>['data'];
 
-const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
+const { title, description, pubDate, updatedDate, heroImage, tags = [], author = 'Trong Dinh' } = Astro.props;
+
+const pageUrl = new URL(Astro.url.pathname, Astro.site).toString();
+const imageUrl = heroImage ? new URL(heroImage.src, Astro.site).toString() : undefined;
+
+// Build structured data
+const graphSchema = {
+	'@context': 'https://schema.org',
+	'@graph': [
+		buildPersonSchema(),
+		buildOrganizationSchema(),
+		buildBlogPostingSchema({
+			title,
+			description,
+			url: pageUrl,
+			publishedDate: pubDate.toISOString(),
+			modifiedDate: updatedDate?.toISOString(),
+			imageUrl,
+			tags,
+		}),
+	],
+};
+
+const breadcrumbSchema = buildBreadcrumbSchema([
+	{ name: 'Home', url: 'https://code4food.work' },
+	{ name: 'Blog', url: 'https://code4food.work/blog' },
+	{ name: title, url: pageUrl },
+]);
 ---
 
 <html lang="en">
 	<head>
-		<BaseHead title={title} description={description} />
+		<BaseHead
+			title={title}
+			description={description}
+			image={heroImage}
+			type="article"
+			publishedTime={pubDate.toISOString()}
+			modifiedTime={updatedDate?.toISOString()}
+			author={author}
+			tags={tags}
+		/>
+		<SchemaOrg schema={graphSchema} />
+		<SchemaOrg schema={breadcrumbSchema} />
 	</head>
 
 	<body>
@@ -27,7 +72,7 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 			<article class="blog-article">
 				<div class="hero-image">
 					{heroImage ? (
-						<Image width={1020} height={510} src={heroImage} alt="" />
+						<Image width={1020} height={510} src={heroImage} alt={title} />
 					) : (
 						<BlogPlaceholder title={title} variant="hero" />
 					)}

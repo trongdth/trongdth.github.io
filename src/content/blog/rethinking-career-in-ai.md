@@ -3,6 +3,7 @@ title: 'Rethinking Your Career in the Age of AI'
 description: 'Insights and strategies for navigating the changing job market as AI masters standard skills.'
 pubDate: 'Mar 17 2026'
 heroImage: '../../assets/blog-placeholder-about.jpg'
+tags: ['AI', 'career', 'future of work', 'technology', 'job market']
 ---
 
 I've been reading a lot about AI recently. Many of my friends in IT and coding are struggling to find jobs. This seemed impossible just a few years ago when companies were overpaying them. But times have changed. 

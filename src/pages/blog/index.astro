@@ -4,18 +4,28 @@ import BlogPlaceholder from '../../components/BlogPlaceholder.astro';
 import Footer from '../../components/Footer.astro';
 import Header from '../../components/Header.astro';
 import SubscribeForm from '../../components/SubscribeForm.astro';
+import SchemaOrg from '../../components/SchemaOrg.astro';
 import { SITE_TITLE } from '../../consts';
 import { getCollection } from 'astro:content';
+import { buildBreadcrumbSchema, buildCollectionPageSchema } from '../../lib/schema-helpers';
 
 const posts = (await getCollection('blog')).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
+
+const breadcrumbSchema = buildBreadcrumbSchema([
+	{ name: 'Home', url: 'https://code4food.work' },
+	{ name: 'Blog', url: 'https://code4food.work/blog' },
+]);
+const collectionSchema = buildCollectionPageSchema();
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
 		<BaseHead title={`Blog | ${SITE_TITLE}`} description="Thoughts, tutorials, and insights on technology and leadership" />
+		<SchemaOrg schema={breadcrumbSchema} />
+		<SchemaOrg schema={collectionSchema} />
 	</head>
 	<body>
 		<Header />
@@ -35,7 +45,7 @@ const posts = (await getCollection('blog')).sort(
 								{post.data.heroImage ? (
 									<img 
 										src={typeof post.data.heroImage === 'string' ? post.data.heroImage : post.data.heroImage.src} 
-										alt="" 
+										alt={post.data.title} 
 										class="post-image"
 										width="200"
 										height="120"

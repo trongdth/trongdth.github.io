@@ -2,13 +2,23 @@
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
+import SchemaOrg from '../components/SchemaOrg.astro';
 import { SITE_TITLE, SOCIAL_LINKS } from '../consts';
+import { buildContactPageSchema, buildBreadcrumbSchema } from '../lib/schema-helpers';
+
+const contactSchema = buildContactPageSchema();
+const breadcrumbSchema = buildBreadcrumbSchema([
+	{ name: 'Home', url: 'https://code4food.work' },
+	{ name: 'Contact', url: 'https://code4food.work/contact' },
+]);
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
-		<BaseHead title={`Contact | ${SITE_TITLE}`} description="Get in touch with Trong Dinh" />
+		<BaseHead title={`Contact | ${SITE_TITLE}`} description="Get in touch with Trong Dinh — CTO & Technology Leader" />
+		<SchemaOrg schema={contactSchema} />
+		<SchemaOrg schema={breadcrumbSchema} />
 	</head>
 	<body>
 		<Header />

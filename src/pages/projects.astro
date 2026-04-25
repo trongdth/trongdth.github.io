@@ -2,15 +2,21 @@
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
+import SchemaOrg from '../components/SchemaOrg.astro';
 import { SITE_TITLE, SOCIAL_LINKS } from '../consts';
+import { buildBreadcrumbSchema } from '../lib/schema-helpers';
 
-
+const breadcrumbSchema = buildBreadcrumbSchema([
+	{ name: 'Home', url: 'https://code4food.work' },
+	{ name: 'Projects', url: 'https://code4food.work/projects' },
+]);
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
-		<BaseHead title={`Projects | ${SITE_TITLE}`} description="Projects coming soon - Trong Dinh" />
+		<BaseHead title={`Projects | ${SITE_TITLE}`} description="Projects by Trong Dinh — things I've built and shipped" />
+		<SchemaOrg schema={breadcrumbSchema} />
 	</head>
 	<body>
 		<Header />

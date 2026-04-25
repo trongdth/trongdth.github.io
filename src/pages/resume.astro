@@ -2,14 +2,22 @@
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import SchemaOrg from '../components/SchemaOrg.astro';
 import { SITE_TITLE } from '../consts';
 import avatar from '../assets/avatar.jpg';
+import { buildBreadcrumbSchema } from '../lib/schema-helpers';
+
+const breadcrumbSchema = buildBreadcrumbSchema([
+	{ name: 'Home', url: 'https://code4food.work' },
+	{ name: 'Resume', url: 'https://code4food.work/resume' },
+]);
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
-		<BaseHead title={`Resume | ${SITE_TITLE}`} description="Trong Dinh's Resume" />
+		<BaseHead title={`Resume | ${SITE_TITLE}`} description="Trong Dinh's Resume — Solution Architect & Engineering Leader with 16+ years in software and 7+ years in Web3" />
+		<SchemaOrg schema={breadcrumbSchema} />
 		<link
 			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
 			rel="stylesheet"

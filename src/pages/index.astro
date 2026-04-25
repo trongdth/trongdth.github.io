@@ -3,19 +3,41 @@ import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import AdPlaceholder from '../components/AdPlaceholder.astro';
+import SchemaOrg from '../components/SchemaOrg.astro';
 import { SITE_DESCRIPTION, SITE_TITLE, SOCIAL_LINKS } from '../consts';
 import { getCollection } from 'astro:content';
+import {
+	buildWebSiteSchema,
+	buildPersonSchema,
+	buildOrganizationSchema,
+	buildBreadcrumbSchema,
+} from '../lib/schema-helpers';
 
 // Get latest blog posts
 const posts = (await getCollection('blog')).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 ).slice(0, 3);
+
+const homepageSchema = {
+	'@context': 'https://schema.org',
+	'@graph': [
+		buildWebSiteSchema(),
+		buildPersonSchema(),
+		buildOrganizationSchema(),
+	],
+};
+
+const breadcrumbSchema = buildBreadcrumbSchema([
+	{ name: 'Home', url: 'https://code4food.work' },
+]);
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
 		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+		<SchemaOrg schema={homepageSchema} />
+		<SchemaOrg schema={breadcrumbSchema} />
 	</head>
 	<body>
 		<Header />
