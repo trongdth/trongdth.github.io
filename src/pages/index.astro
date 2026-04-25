@@ -56,6 +56,18 @@ const posts = (await getCollection('blog')).sort(
 			<!-- Ad: Leaderboard after Hero -->
 			<AdPlaceholder format="leaderboard" label="Ad - After Hero" />
 
+			<!-- Pomodoro CTA Section -->
+			<section class="section pomodoro-cta">
+				<div class="pomodoro-cta-card card">
+					<div class="pomodoro-cta-icon">🍅</div>
+					<div class="pomodoro-cta-content">
+						<h2>Focus Timer</h2>
+						<p>Boost your productivity with the Pomodoro Technique. Customizable intervals, task tracking, and analytics — all in your browser.</p>
+						<a href="/pomodoro" class="btn">Start Focusing →</a>
+					</div>
+				</div>
+			</section>
+
 			<!-- Latest Posts Section -->
 			<section class="section">
 				<div class="section-header">
@@ -365,6 +377,58 @@ const posts = (await getCollection('blog')).sort(
 
 		.link-card span {
 			font-size: 0.9rem;
+		}
+	}
+
+	/* Pomodoro CTA */
+	.pomodoro-cta-card {
+		display: flex;
+		align-items: center;
+		gap: 2em;
+		padding: 2.5em;
+		background: linear-gradient(135deg, rgba(239, 68, 68, 0.08) 0%, rgba(168, 85, 247, 0.08) 50%, rgba(6, 182, 212, 0.08) 100%);
+		border: 1px solid rgba(239, 68, 68, 0.15);
+		position: relative;
+		overflow: hidden;
+	}
+
+	.pomodoro-cta-card::before {
+		content: '';
+		position: absolute;
+		top: -50%;
+		right: -20%;
+		width: 200px;
+		height: 200px;
+		background: radial-gradient(circle, rgba(239, 68, 68, 0.1) 0%, transparent 70%);
+		pointer-events: none;
+	}
+
+	.pomodoro-cta-icon {
+		font-size: 3.5rem;
+		flex-shrink: 0;
+		line-height: 1;
+	}
+
+	.pomodoro-cta-content h2 {
+		margin: 0 0 0.5em;
+		font-size: 1.5rem;
+	}
+
+	.pomodoro-cta-content p {
+		color: var(--text-secondary);
+		margin-bottom: 1.25em;
+		font-size: 0.95rem;
+	}
+
+	@media (max-width: 640px) {
+		.pomodoro-cta-card {
+			flex-direction: column;
+			text-align: center;
+			padding: 2em 1.5em;
+			gap: 1em;
+		}
+		.pomodoro-cta-icon {
+			font-size: 2.5rem;
 		}
 	}
 </style>

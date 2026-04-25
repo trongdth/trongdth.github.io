@@ -1,0 +1,60 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import PomodoroApp from '../components/PomodoroApp';
+import { SITE_TITLE } from '../consts';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead
+			title={`Pomodoro Timer — ${SITE_TITLE}`}
+			description="Boost your productivity with the Pomodoro Technique. Customizable focus intervals, task tracking, and productivity analytics."
+		/>
+	</head>
+	<body>
+		<Header />
+		<main>
+			<div class="pomodoro-page-header">
+				<a href="/" class="back-home">← Back to Home</a>
+				<h1><span class="glow-text">Pomodoro</span> Timer</h1>
+				<p class="pomodoro-subtitle">Focus. Break. Repeat. Master your productivity rhythm.</p>
+			</div>
+			<PomodoroApp client:load />
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.pomodoro-page-header {
+		text-align: center;
+		padding: 2em 0 1em;
+	}
+	.back-home {
+		display: inline-block;
+		margin-bottom: 1.5em;
+		color: var(--text-muted);
+		font-size: 0.9rem;
+		font-weight: 500;
+		transition: color var(--transition-fast);
+	}
+	.back-home:hover {
+		color: var(--accent-cyan);
+	}
+	.pomodoro-page-header h1 {
+		font-size: 2.5rem;
+		margin-bottom: 0.25em;
+	}
+	.pomodoro-subtitle {
+		color: var(--text-muted);
+		font-size: 1.1rem;
+		font-family: 'JetBrains Mono', monospace;
+	}
+	@media (max-width: 640px) {
+		.pomodoro-page-header h1 { font-size: 1.75rem; }
+		.pomodoro-subtitle { font-size: 0.9rem; }
+	}
+</style>
