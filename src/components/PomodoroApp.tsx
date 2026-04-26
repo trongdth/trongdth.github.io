@@ -8,6 +8,7 @@ import {
 } from '../lib/pomodoro-storage';
 import TaskList from './pomodoro/TaskList';
 import Analytics from './pomodoro/Analytics';
+import PrioritizeModal from './pomodoro/PrioritizeModal';
 
 type Tab = 'timer' | 'tasks' | 'analytics';
 
@@ -24,6 +25,7 @@ export default function PomodoroApp() {
   const [activeTaskId, setActiveTaskId] = useState<string | null>(null);
   const [history, setHistory] = useState<DailyRecord[]>([]);
   const [pulse, setPulse] = useState(false);
+  const [showPrioritizeModal, setShowPrioritizeModal] = useState(false);
   const intervalRef = useRef<number | null>(null);
   const sessionStartRef = useRef<string | null>(null);
 
@@ -326,8 +328,27 @@ export default function PomodoroApp() {
             </div>
           )}
 
-          {/* Quick task list on timer tab */}
+          {/* Prioritize button + Quick task list on timer tab */}
+          <div className="timer-task-header">
+            <button className="prioritize-btn" onClick={() => setShowPrioritizeModal(true)} title="Prioritize tasks using Eisenhower Matrix">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+              </svg>
+              Prioritize
+            </button>
+          </div>
           <TaskList tasks={tasks} activeTaskId={activeTaskId} onTasksChange={handleTasksChange} onSetActive={setActiveTaskId} />
+
+          {/* Prioritize Modal */}
+          {showPrioritizeModal && (
+            <PrioritizeModal
+              tasks={tasks}
+              activeTaskId={activeTaskId}
+              onTasksChange={handleTasksChange}
+              onSetActive={setActiveTaskId}
+              onClose={() => setShowPrioritizeModal(false)}
+            />
+          )}
         </div>
       )}
 
