@@ -9,12 +9,12 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/mdx": "^4.3.13",
-    "@astrojs/react": "^5.0.3",
-    "@astrojs/rss": "^4.0.15",
-    "@astrojs/sitemap": "^3.7.0",
+    "@astrojs/mdx": "^5.0.4",
+    "@astrojs/react": "^5.0.4",
+    "@astrojs/rss": "^4.0.18",
+    "@astrojs/sitemap": "^3.7.2",
     "@supabase/supabase-js": "^2.103.2",
-    "astro": "^5.17.1",
+    "astro": "^6.1.9",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "sharp": "^0.34.3"

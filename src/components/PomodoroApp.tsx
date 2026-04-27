@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import '../styles/pomodoro.css';
 import {
   loadSettings, saveSettings, loadTasks, saveTasks, loadHistory, saveHistory,
+  loadTimerState, saveTimerState, clearTimerState,
   getTodayRecord, upsertTodayRecord, playCompletionSound, sendNotification,
   requestNotificationPermission, DEFAULT_SETTINGS,
   type PomodoroSettings, type SessionType, type PomodoroTask, type DailyRecord,
@@ -33,11 +34,48 @@ export default function PomodoroApp() {
   useEffect(() => {
     const s = loadSettings();
     setSettings(s);
-    setTimeLeft(s.focusDuration * 60);
+    
+    // Restore timer state
+    const saved = loadTimerState();
+    if (saved) {
+      setSessionType(saved.sessionType);
+      setActiveTaskId(saved.activeTaskId);
+      setCompletedPomos(saved.completedPomos);
+      sessionStartRef.current = saved.sessionStartedAt;
+
+      if (saved.isRunning && saved.sessionStartedAt) {
+        const now = new Date().getTime();
+        const lastUpdated = new Date(saved.lastUpdated).getTime();
+        const elapsedSeconds = Math.floor((now - lastUpdated) / 1000);
+        const newTimeLeft = Math.max(0, saved.timeLeft - elapsedSeconds);
+        
+        setTimeLeft(newTimeLeft);
+        setIsRunning(true);
+      } else {
+        setTimeLeft(saved.timeLeft);
+        setIsRunning(false);
+      }
+    } else {
+      setTimeLeft(s.focusDuration * 60);
+    }
+    
     setTasks(loadTasks());
     setHistory(loadHistory());
     requestNotificationPermission();
   }, []);
+
+  // ----- Persist timer state to localStorage -----
+  useEffect(() => {
+    saveTimerState({
+      sessionType,
+      timeLeft,
+      isRunning,
+      lastUpdated: new Date().toISOString(),
+      activeTaskId,
+      completedPomos,
+      sessionStartedAt: sessionStartRef.current,
+    });
+  }, [sessionType, timeLeft, isRunning, activeTaskId, completedPomos]);
 
   // ----- Derived values -----
   const totalSeconds = sessionType === 'focus'
@@ -200,6 +238,8 @@ export default function PomodoroApp() {
     if (!confirm('Clear all Pomodoro data? This cannot be undone.')) return;
     setHistory([]); saveHistory([]);
     setCompletedPomos(0);
+    clearTimerState();
+    resetTimer();
   };
 
   // ----- Update page title -----

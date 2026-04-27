@@ -57,6 +57,16 @@ export interface DailyRecord {
   sessions: SessionRecord[];
 }
 
+export interface TimerState {
+  sessionType: SessionType;
+  timeLeft: number;
+  isRunning: boolean;
+  lastUpdated: string;
+  activeTaskId: string | null;
+  completedPomos: number;
+  sessionStartedAt: string | null;
+}
+
 // ===== DEFAULTS =====
 export const DEFAULT_SETTINGS: PomodoroSettings = {
   focusDuration: 25,
@@ -116,6 +126,19 @@ export function loadHistory(): DailyRecord[] {
 
 export function saveHistory(h: DailyRecord[]): void {
   safeSet(KEYS.history, h);
+}
+
+// ===== TIMER STATE =====
+export function loadTimerState(): TimerState | null {
+  return safeGet<TimerState | null>(KEYS.state, null);
+}
+
+export function saveTimerState(state: TimerState): void {
+  safeSet(KEYS.state, state);
+}
+
+export function clearTimerState(): void {
+  localStorage.removeItem(KEYS.state);
 }
 
 export function todayKey(): string {
