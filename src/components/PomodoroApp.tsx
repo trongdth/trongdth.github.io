@@ -319,12 +319,12 @@ export default function PomodoroApp() {
             <button className="btn-icon" onClick={() => setShowSettings(!showSettings)} title="Settings">⚙</button>
           </div>
 
-          {/* Active task indicator */}
-          {activeTaskId && (
-            <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', textAlign: 'center' }}>
-              Working on: <strong style={{ color: 'var(--accent-cyan)' }}>{tasks.find(t => t.id === activeTaskId)?.title}</strong>
-            </div>
-          )}
+          {/* Active task indicator (fixed height to prevent layout shift) */}
+          <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', textAlign: 'center', minHeight: '1.5em', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            {activeTaskId ? (
+              <span>Working on: <strong style={{ color: 'var(--accent-cyan)' }}>{tasks.find(t => t.id === activeTaskId)?.title}</strong></span>
+            ) : null}
+          </div>
 
           {/* Settings panel */}
           {showSettings && (

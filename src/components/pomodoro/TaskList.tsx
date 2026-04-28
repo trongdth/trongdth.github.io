@@ -124,6 +124,27 @@ export default function TaskList({ tasks, activeTaskId, onTasksChange, onSetActi
   const [newTitle, setNewTitle] = useState('');
   const [newCategory, setNewCategory] = useState<EisenhowerCategory>('do');
   const [taskToDelete, setTaskToDelete] = useState<PomodoroTask | null>(null);
+  const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
+  const [editTitle, setEditTitle] = useState('');
+
+  const startEdit = (task: PomodoroTask) => {
+    setEditingTaskId(task.id);
+    setEditTitle(task.title);
+  };
+
+  const saveEdit = (id: string) => {
+    if (editingTaskId === id) {
+      const title = editTitle.trim();
+      if (title) {
+        onTasksChange(tasks.map(t => t.id === id ? { ...t, title } : t));
+      }
+      setEditingTaskId(null);
+    }
+  };
+
+  const cancelEdit = () => {
+    setEditingTaskId(null);
+  };
 
   const addTask = () => {
     const title = newTitle.trim();
@@ -201,14 +222,44 @@ export default function TaskList({ tasks, activeTaskId, onTasksChange, onSetActi
         {activeTasks.map(task => (
           <div
             key={task.id}
-            className={`task-item${activeTaskId === task.id ? ' active-task' : ''}`}
-            onClick={() => onSetActive(activeTaskId === task.id ? null : task.id)}
+            className={`task-item${activeTaskId === task.id ? ' active-task' : ''} ${editingTaskId === task.id ? 'editing' : ''}`}
+            onClick={() => {
+              if (editingTaskId !== task.id) {
+                onSetActive(activeTaskId === task.id ? null : task.id);
+              }
+            }}
           >
             <button
               className={`task-checkbox${task.isCompleted ? ' checked' : ''}`}
               onClick={e => { e.stopPropagation(); toggleComplete(task.id); }}
             >✓</button>
-            <span className="task-name">{task.title}</span>
+            {editingTaskId === task.id ? (
+              <input
+                type="text"
+                className="task-name-input"
+                value={editTitle}
+                autoFocus
+                onClick={e => e.stopPropagation()}
+                onChange={e => setEditTitle(e.target.value)}
+                onKeyDown={e => {
+                  if (e.key === 'Enter') saveEdit(task.id);
+                  if (e.key === 'Escape') cancelEdit();
+                }}
+                onBlur={() => saveEdit(task.id)}
+              />
+            ) : (
+              <span 
+                className="task-name"
+                onDoubleClick={(e) => {
+                  e.stopPropagation();
+                  window.getSelection()?.removeAllRanges();
+                  startEdit(task);
+                }}
+                title="Double click to edit"
+              >
+                {task.title}
+              </span>
+            )}
             <CategoryBadge
               category={task.category || 'do'}
               onChange={c => updateCategory(task.id, c)}

@@ -455,6 +455,19 @@
   word-break: break-word;
 }
 
+.task-name-input {
+  flex: 1;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--accent-cyan);
+  border-radius: 4px;
+  padding: 0.2em 0.5em;
+  min-width: 0;
+  box-shadow: 0 0 8px rgba(6, 182, 212, 0.2);
+  outline: none;
+}
+
 .task-item.completed-task .task-name {
   text-decoration: line-through;
   color: var(--text-muted);
