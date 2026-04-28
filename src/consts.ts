@@ -24,3 +24,14 @@ export const GA_MEASUREMENT_ID = "G-L187KVEGM7";
 
 // Google AdSense Publisher ID (e.g. "ca-pub-1234567890123456")
 export const GOOGLE_ADSENSE_ID = "ca-pub-8750037703452121";
+
+// Blog Categories
+export const BLOG_CATEGORIES = [
+  "APPSCYCLONE-DEV-LIFE",
+  "AI-FIRST",
+  "MENTAL-HEALTH",
+  "PRODUCT",
+  "OPEN-SOURCE",
+] as const;
+
+export type BlogCategory = typeof BLOG_CATEGORIES[number];

@@ -1,0 +1,47 @@
+---
+import type { BlogCategory } from '../consts';
+
+interface Props {
+	category: BlogCategory | 'ALL';
+	isActive?: boolean;
+}
+
+const { category, isActive = false } = Astro.props;
+
+// For 'ALL', we just link to /blog, otherwise /blog/category/[category]
+const href = category === 'ALL' ? '/blog' : `/blog/category/${category}`;
+---
+
+<a href={href} class={`category-badge ${isActive ? 'active' : ''}`}>
+	{category}
+</a>
+
+<style>
+	.category-badge {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		padding: 0.35em 0.75em;
+		background: rgba(168, 85, 247, 0.15);
+		border-radius: 4px;
+		font-size: 0.65rem;
+		font-weight: 700;
+		color: var(--accent-purple);
+		transition: all var(--transition-fast);
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		text-decoration: none;
+	}
+
+	.category-badge:hover {
+		background: rgba(168, 85, 247, 0.25);
+		color: #fff;
+		transform: translateY(-1px);
+	}
+
+	.category-badge.active {
+		background: var(--accent-purple);
+		color: #fff;
+		box-shadow: var(--glow-purple);
+	}
+</style>

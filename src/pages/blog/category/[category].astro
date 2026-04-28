@@ -1,22 +1,38 @@
 ---
-import BaseHead from '../../components/BaseHead.astro';
-import BlogPlaceholder from '../../components/BlogPlaceholder.astro';
-import Footer from '../../components/Footer.astro';
-import Header from '../../components/Header.astro';
-import SubscribeForm from '../../components/SubscribeForm.astro';
-import CategorySidebar from '../../components/CategorySidebar.astro';
-import SchemaOrg from '../../components/SchemaOrg.astro';
-import { SITE_TITLE } from '../../consts';
+import BaseHead from '../../../components/BaseHead.astro';
+import BlogPlaceholder from '../../../components/BlogPlaceholder.astro';
+import Footer from '../../../components/Footer.astro';
+import Header from '../../../components/Header.astro';
+import SubscribeForm from '../../../components/SubscribeForm.astro';
+import CategorySidebar from '../../../components/CategorySidebar.astro';
+import SchemaOrg from '../../../components/SchemaOrg.astro';
+import { SITE_TITLE } from '../../../consts';
 import { getCollection } from 'astro:content';
-import { buildBreadcrumbSchema, buildCollectionPageSchema } from '../../lib/schema-helpers';
+import { BLOG_CATEGORIES, type BlogCategory } from '../../../consts';
+import { buildBreadcrumbSchema, buildCollectionPageSchema } from '../../../lib/schema-helpers';
 
-const posts = (await getCollection('blog')).sort(
-	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
-);
+export async function getStaticPaths() {
+	const posts = await getCollection('blog');
+	
+	return BLOG_CATEGORIES.map((category) => {
+		const filteredPosts = posts.filter(
+			(post) => post.data.categories?.includes(category)
+		).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+		return {
+			params: { category },
+			props: { posts: filteredPosts },
+		};
+	});
+}
+
+const { category } = Astro.params;
+const { posts } = Astro.props;
 
 const breadcrumbSchema = buildBreadcrumbSchema([
 	{ name: 'Home', url: 'https://code4food.work' },
 	{ name: 'Blog', url: 'https://code4food.work/blog' },
+	{ name: category as string, url: `https://code4food.work/blog/category/${category}` },
 ]);
 const collectionSchema = buildCollectionPageSchema();
 ---
@@ -24,7 +40,7 @@ const collectionSchema = buildCollectionPageSchema();
 <!doctype html>
 <html lang="en">
 	<head>
-		<BaseHead title={`Blog | ${SITE_TITLE}`} description="Thoughts, tutorials, and insights on technology and leadership" />
+		<BaseHead title={`${category} | Blog | ${SITE_TITLE}`} description={`Articles about ${category}`} />
 		<SchemaOrg schema={breadcrumbSchema} />
 		<SchemaOrg schema={collectionSchema} />
 	</head>
@@ -32,48 +48,54 @@ const collectionSchema = buildCollectionPageSchema();
 		<Header />
 		<main>
 			<section class="page-hero">
-				<h1>Blog</h1>
+				<h1>{category}</h1>
 				<p class="page-description">
-					Thoughts, tutorials, and insights on technology, leadership, and building products.
+					Articles categorized as {category}.
 				</p>
 			</section>
 
 			<section class="blog-container">
 				<div class="posts-column">
-					<ul class="posts-list">
-						{posts.map((post) => (
-							<li>
-								<a href={`/blog/${post.id}/`} class="post-item card">
-									{post.data.heroImage ? (
-										<img 
-											src={typeof post.data.heroImage === 'string' ? post.data.heroImage : post.data.heroImage.src} 
-											alt={post.data.title} 
-											class="post-image"
-											width="200"
-											height="120"
-										/>
-									) : (
-										<BlogPlaceholder title={post.data.title} variant="thumbnail" />
-									)}
-									<div class="post-content">
-										<time class="post-date">
-											{post.data.pubDate.toLocaleDateString('en-US', { 
-												year: 'numeric', 
-												month: 'long', 
-												day: 'numeric' 
-											})}
-										</time>
-										<h2 class="post-title">{post.data.title}</h2>
-										<p class="post-excerpt">{post.data.description}</p>
-										<span class="read-more">Read article →</span>
-									</div>
-								</a>
-							</li>
-						))}
-					</ul>
+					{posts.length > 0 ? (
+						<ul class="posts-list">
+							{posts.map((post) => (
+								<li>
+									<a href={`/blog/${post.id}/`} class="post-item card">
+										{post.data.heroImage ? (
+											<img 
+												src={typeof post.data.heroImage === 'string' ? post.data.heroImage : post.data.heroImage.src} 
+												alt={post.data.title} 
+												class="post-image"
+												width="200"
+												height="120"
+											/>
+										) : (
+											<BlogPlaceholder title={post.data.title} variant="thumbnail" />
+										)}
+										<div class="post-content">
+											<time class="post-date">
+												{post.data.pubDate.toLocaleDateString('en-US', { 
+													year: 'numeric', 
+													month: 'long', 
+													day: 'numeric' 
+												})}
+											</time>
+											<h2 class="post-title">{post.data.title}</h2>
+											<p class="post-excerpt">{post.data.description}</p>
+											<span class="read-more">Read article →</span>
+										</div>
+									</a>
+								</li>
+							))}
+						</ul>
+					) : (
+						<div class="empty-state">
+							<p>No articles found in this category yet.</p>
+						</div>
+					)}
 				</div>
 				<div class="sidebar-column">
-					<CategorySidebar activeCategory="ALL" />
+					<CategorySidebar activeCategory={category as BlogCategory} />
 				</div>
 			</section>
 
@@ -183,6 +205,15 @@ const collectionSchema = buildCollectionPageSchema();
 		color: var(--accent-cyan);
 		font-weight: 500;
 		font-size: 0.9rem;
+	}
+
+	.empty-state {
+		text-align: center;
+		padding: 4em 2em;
+		background: var(--bg-card);
+		border-radius: 12px;
+		border: 1px dashed var(--border-color);
+		color: var(--text-secondary);
 	}
 
 	/* Responsive - Standardized breakpoints: 640px (mobile), 768px (tablet), 1024px (desktop) */

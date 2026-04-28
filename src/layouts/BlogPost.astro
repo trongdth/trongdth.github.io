@@ -11,6 +11,8 @@ import AdPlaceholder from '../components/AdPlaceholder.astro';
 import SocialShare from '../components/SocialShare.astro';
 import Comments from '../components/Comments';
 import SchemaOrg from '../components/SchemaOrg.astro';
+import CategoryBadge from '../components/CategoryBadge.astro';
+import type { BlogCategory } from '../consts';
 import {
 	buildBlogPostingSchema,
 	buildBreadcrumbSchema,
@@ -20,7 +22,7 @@ import {
 
 type Props = CollectionEntry<'blog'>['data'];
 
-const { title, description, pubDate, updatedDate, heroImage, tags = [], author = 'Trong Dinh' } = Astro.props;
+const { title, description, pubDate, updatedDate, heroImage, tags = [], categories = [], author = 'Trong Dinh' } = Astro.props;
 
 const pageUrl = new URL(Astro.url.pathname, Astro.site).toString();
 const imageUrl = heroImage ? new URL(heroImage.src, Astro.site).toString() : undefined;
@@ -39,6 +41,7 @@ const graphSchema = {
 			modifiedDate: updatedDate?.toISOString(),
 			imageUrl,
 			tags,
+			categories,
 		}),
 	],
 };
@@ -97,6 +100,18 @@ const breadcrumbSchema = buildBreadcrumbSchema([
 				</div>
 				<!-- Ad: Rectangle ad after content -->
 				<AdPlaceholder format="rectangle" label="Ad - After Content" />
+				
+				{categories && categories.length > 0 && (
+					<div class="post-categories">
+						<h4>Categories:</h4>
+						<div class="category-badges">
+							{categories.map((cat: string) => (
+								<CategoryBadge category={cat as BlogCategory} />
+							))}
+						</div>
+					</div>
+				)}
+
 				<SubscribeForm />
 				<Comments client:visible postId={Astro.url.pathname} />
 			</article>
@@ -214,6 +229,24 @@ const breadcrumbSchema = buildBreadcrumbSchema([
 	.article-content :global(img) {
 		border-radius: 12px;
 		margin: 2em 0;
+	}
+
+	.post-categories {
+		margin: 3em 0;
+		padding-top: 2em;
+		border-top: 1px solid var(--border-color);
+	}
+
+	.post-categories h4 {
+		margin-bottom: 1em;
+		color: var(--text-secondary);
+		font-size: 1.1rem;
+	}
+
+	.category-badges {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75em;
 	}
 
 	.back-link {

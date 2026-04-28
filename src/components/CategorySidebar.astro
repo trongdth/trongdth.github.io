@@ -1,0 +1,42 @@
+---
+import { BLOG_CATEGORIES, type BlogCategory } from '../consts';
+import CategoryBadge from './CategoryBadge.astro';
+
+interface Props {
+	activeCategory?: BlogCategory | 'ALL';
+}
+
+const { activeCategory = 'ALL' } = Astro.props;
+---
+
+<aside class="category-sidebar">
+	<h3>Categories</h3>
+	<div class="category-list">
+		<CategoryBadge category="ALL" isActive={activeCategory === 'ALL'} />
+		{BLOG_CATEGORIES.map((category) => (
+			<CategoryBadge category={category} isActive={activeCategory === category} />
+		))}
+	</div>
+</aside>
+
+<style>
+	.category-sidebar {
+		padding: 1em 0;
+		position: sticky;
+		top: 100px; /* Adjust based on your header height */
+	}
+
+	.category-sidebar h3 {
+		font-size: 1.4rem;
+		font-weight: 700;
+		margin-bottom: 1.25em;
+		color: var(--accent-purple);
+	}
+
+	.category-list {
+		display: flex;
+		flex-direction: column;
+		gap: 1em;
+		align-items: flex-start;
+	}
+</style>

@@ -106,6 +106,7 @@ export interface BlogPostSchemaInput {
   modifiedDate?: string; // ISO 8601
   imageUrl?: string;
   tags?: string[];
+  categories?: string[];
 }
 
 export function buildBlogPostingSchema(post: BlogPostSchemaInput) {
@@ -124,6 +125,7 @@ export function buildBlogPostingSchema(post: BlogPostSchemaInput) {
       },
     }),
     ...(post.tags && post.tags.length > 0 && { keywords: post.tags.join(', ') }),
+    ...(post.categories && post.categories.length > 0 && { articleSection: post.categories }),
     author: { '@id': `${SITE_URL}/#person` },
     publisher: { '@id': `${SITE_URL}/#organization` },
     mainEntityOfPage: {

@@ -4,6 +4,7 @@ description: 'Insights and strategies for navigating the changing job market as 
 pubDate: 'Mar 17 2026'
 heroImage: '../../assets/blog-placeholder-about.jpg'
 tags: ['AI', 'career', 'future of work', 'technology', 'job market']
+categories: ['AI-FIRST', 'APPSCYCLONE-DEV-LIFE']
 ---
 
 I've been reading a lot about AI recently. Many of my friends in IT and coding are struggling to find jobs. This seemed impossible just a few years ago when companies were overpaying them. But times have changed. 
