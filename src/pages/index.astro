@@ -16,7 +16,7 @@ import {
 // Get latest blog posts
 const posts = (await getCollection('blog')).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
-).slice(0, 3);
+).slice(0, 4);
 
 const homepageSchema = {
 	'@context': 'https://schema.org',
