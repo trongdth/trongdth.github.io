@@ -22,10 +22,11 @@ import {
 
 type Props = CollectionEntry<'blog'>['data'];
 
-const { title, description, pubDate, updatedDate, heroImage, tags = [], categories = [], author = 'Trong Dinh' } = Astro.props;
+const { title, description, pubDate, updatedDate, heroImage, ogImage, tags = [], categories = [], author = 'Trong Dinh' } = Astro.props;
 
 const pageUrl = new URL(Astro.url.pathname, Astro.site).toString();
-const imageUrl = heroImage ? new URL(heroImage.src, Astro.site).toString() : undefined;
+const metaImage = ogImage || heroImage;
+const imageUrl = metaImage ? new URL(metaImage.src, Astro.site).toString() : undefined;
 
 // Build structured data
 const graphSchema = {
@@ -58,7 +59,7 @@ const breadcrumbSchema = buildBreadcrumbSchema([
 		<BaseHead
 			title={title}
 			description={description}
-			image={heroImage}
+			image={metaImage}
 			type="article"
 			publishedTime={pubDate.toISOString()}
 			modifiedTime={updatedDate?.toISOString()}

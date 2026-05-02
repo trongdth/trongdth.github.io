@@ -5,6 +5,7 @@ pubDate: "May 01 2026"
 tags: ["ai-first", "ai-agents", "fundamentals", "architecture"]
 categories: ["AI-FIRST"]
 heroImage: "../../assets/blog/ai-first-what-is-an-ai-agent/01-agent-anatomy.svg"
+ogImage: "../../assets/blog/ai-first-what-is-an-ai-agent/01-agent-anatomy.png"
 ---
 
 Welcome to **AI First** — a series that takes you from zero to running AI agents. The goal is simple: **understand** the core concepts, **build** your own assistant agent, and **orchestrate** multiple agents working together. We'll use real tools and frameworks along the way, but those are just the means. The destination is the same — you ship agents that actually work.
