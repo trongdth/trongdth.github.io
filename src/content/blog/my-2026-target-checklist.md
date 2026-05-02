@@ -4,6 +4,7 @@ description: 'My goals and targets for 2026 — career, health, learning, and mo
 pubDate: 'Feb 13 2026'
 tags: ['goals', 'productivity', 'personal development', '2026', 'self-improvement']
 categories: ['MENTAL-HEALTH', 'OPEN-SOURCE']
+ogImage: '../../assets/blog/my-2026-target-checklist/og-image.png'
 ---
 
 Another year, another list. I've learned that writing goals down makes them real — accountability starts with visibility. Here's what I'm committing to in 2026.

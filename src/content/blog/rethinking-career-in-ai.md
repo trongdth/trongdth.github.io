@@ -3,6 +3,7 @@ title: 'Rethinking Your Career in the Age of AI'
 description: 'Insights and strategies for navigating the changing job market as AI masters standard skills.'
 pubDate: 'Mar 17 2026'
 heroImage: '../../assets/blog-placeholder-about.jpg'
+ogImage: '../../assets/blog/rethinking-career-in-ai/og-image.png'
 tags: ['AI', 'career', 'future of work', 'technology', 'job market']
 categories: ['AI-FIRST', 'APPSCYCLONE-DEV-LIFE']
 ---
