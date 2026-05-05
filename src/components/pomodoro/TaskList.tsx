@@ -2,6 +2,13 @@ import { useState, useRef, useEffect } from 'react';
 import type { PomodoroTask, EisenhowerCategory } from '../../lib/pomodoro-storage';
 import { generateId, EISENHOWER_META } from '../../lib/pomodoro-storage';
 import DeleteConfirmModal from './DeleteConfirmModal';
+import TaskDetailModal from './TaskDetailModal';
+
+function truncateDescription(desc: string, maxWords: number = 10): { text: string; truncated: boolean } {
+  const words = desc.trim().split(/\s+/);
+  if (words.length <= maxWords) return { text: desc.trim(), truncated: false };
+  return { text: words.slice(0, maxWords).join(' ') + '…', truncated: true };
+}
 
 function EisenhowerLegend() {
   return (
@@ -120,12 +127,63 @@ function CategorySelector({ value, onChange }: { value: EisenhowerCategory; onCh
   );
 }
 
+function DescriptionPreview({ task, onExpand }: { task: PomodoroTask; onExpand: () => void }) {
+  const desc = task.description;
+  const todoCount = task.todos?.length || 0;
+  const commentCount = task.comments?.length || 0;
+  const hasMeta = todoCount > 0 || commentCount > 0;
+
+  if (!desc && !hasMeta) {
+    return (
+      <div className="task-description-row">
+        <button
+          className="task-expand-btn subtle"
+          onClick={e => { e.stopPropagation(); onExpand(); }}
+          title="Add description & details"
+        >
+          + Add details
+        </button>
+      </div>
+    );
+  }
+
+  const { text, truncated } = desc ? truncateDescription(desc) : { text: '', truncated: false };
+
+  return (
+    <div className="task-description-row">
+      {text && (
+        <span className="task-description-preview">{text}</span>
+      )}
+      <div className="task-description-meta">
+        {todoCount > 0 && (
+          <span className="task-description-badge">
+            ☑ {task.todos!.filter(t => t.completed).length}/{todoCount}
+          </span>
+        )}
+        {commentCount > 0 && (
+          <span className="task-description-badge">
+            💬 {commentCount}
+          </span>
+        )}
+      </div>
+      <button
+        className="task-expand-btn"
+        onClick={e => { e.stopPropagation(); onExpand(); }}
+        title="View details"
+      >
+        {truncated ? 'more ↗' : '↗'}
+      </button>
+    </div>
+  );
+}
+
 export default function TaskList({ tasks, activeTaskId, onTasksChange, onSetActive }: Props) {
   const [newTitle, setNewTitle] = useState('');
   const [newCategory, setNewCategory] = useState<EisenhowerCategory>('do');
   const [taskToDelete, setTaskToDelete] = useState<PomodoroTask | null>(null);
   const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState('');
+  const [detailTask, setDetailTask] = useState<PomodoroTask | null>(null);
 
   const startEdit = (task: PomodoroTask) => {
     setEditingTaskId(task.id);
@@ -187,6 +245,11 @@ export default function TaskList({ tasks, activeTaskId, onTasksChange, onSetActi
 
   const updateCategory = (id: string, category: EisenhowerCategory) => {
     onTasksChange(tasks.map(t => t.id === id ? { ...t, category } : t));
+  };
+
+  const handleDetailUpdate = (updated: PomodoroTask) => {
+    onTasksChange(tasks.map(t => t.id === updated.id ? updated : t));
+    setDetailTask(updated);
   };
 
   const activeTasks = tasks.filter(t => !t.isCompleted);
@@ -284,6 +347,7 @@ export default function TaskList({ tasks, activeTaskId, onTasksChange, onSetActi
                 <button className="task-action-btn" onClick={e => { e.stopPropagation(); deleteTask(task.id); }} title="Delete">✕</button>
               </div>
             </div>
+            <DescriptionPreview task={task} onExpand={() => setDetailTask(task)} />
           </div>
         ))}
         {completedTasks.length > 0 && (
@@ -313,6 +377,7 @@ export default function TaskList({ tasks, activeTaskId, onTasksChange, onSetActi
                     <button className="task-action-btn" onClick={() => deleteTask(task.id)} title="Delete">✕</button>
                   </div>
                 </div>
+                <DescriptionPreview task={task} onExpand={() => setDetailTask(task)} />
               </div>
             ))}
           </>
@@ -327,6 +392,14 @@ export default function TaskList({ tasks, activeTaskId, onTasksChange, onSetActi
         onConfirm={confirmDelete}
         taskTitle={taskToDelete?.title || ''}
       />
+
+      {detailTask && (
+        <TaskDetailModal
+          task={detailTask}
+          onUpdate={handleDetailUpdate}
+          onClose={() => setDetailTask(null)}
+        />
+      )}
     </div>
   );
 }

@@ -30,9 +30,25 @@ export const EISENHOWER_META: Record<EisenhowerCategory, {
 
 export const EISENHOWER_PRIORITY_ORDER: EisenhowerCategory[] = ['do', 'decide', 'delegate', 'delete'];
 
+export interface TodoItem {
+  id: string;
+  text: string;
+  completed: boolean;
+  createdAt: string;
+}
+
+export interface TaskComment {
+  id: string;
+  text: string;
+  createdAt: string;
+}
+
 export interface PomodoroTask {
   id: string;
   title: string;
+  description?: string;
+  todos?: TodoItem[];
+  comments?: TaskComment[];
   estimatedPomodoros: number;
   completedPomodoros: number;
   isCompleted: boolean;
