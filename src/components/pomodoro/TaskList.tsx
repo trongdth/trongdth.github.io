@@ -184,6 +184,7 @@ export default function TaskList({ tasks, activeTaskId, onTasksChange, onSetActi
   const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState('');
   const [detailTask, setDetailTask] = useState<PomodoroTask | null>(null);
+  const [showCompleted, setShowCompleted] = useState(false);
 
   const startEdit = (task: PomodoroTask) => {
     setEditingTaskId(task.id);
@@ -352,10 +353,13 @@ export default function TaskList({ tasks, activeTaskId, onTasksChange, onSetActi
         ))}
         {completedTasks.length > 0 && (
           <>
-            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', padding: '0.5em 0', marginTop: '0.5em' }}>
-              Completed ({completedTasks.length})
-            </div>
-            {completedTasks.map(task => (
+            <button
+              className="completed-toggle"
+              onClick={() => setShowCompleted(!showCompleted)}
+            >
+              {showCompleted ? '▾' : '▸'} Completed ({completedTasks.length})
+            </button>
+            {showCompleted && completedTasks.map(task => (
               <div key={task.id} className="task-item completed-task">
                 <button
                   className="task-checkbox checked"

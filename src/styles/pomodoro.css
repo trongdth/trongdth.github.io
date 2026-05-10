@@ -550,6 +550,27 @@
   font-size: 0.9rem;
 }
 
+/* Completed tasks toggle */
+.completed-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-family: inherit;
+  padding: 0.5em 0;
+  margin-top: 0.5em;
+  cursor: pointer;
+  transition: color 200ms ease;
+  width: 100%;
+}
+
+.completed-toggle:hover {
+  color: var(--text-secondary);
+}
+
 /* ===== ANALYTICS (Phase 3) ===== */
 .analytics-section {
   padding: 1em 0;

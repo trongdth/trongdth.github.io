@@ -235,11 +235,22 @@ export default function PomodoroApp() {
   };
 
   const handleClear = () => {
-    if (!confirm('Clear all Pomodoro data? This cannot be undone.')) return;
     setHistory([]); saveHistory([]);
     setCompletedPomos(0);
-    clearTimerState();
+  };
+
+  const handleApplyImport = (data: { settings: Record<string, unknown>; tasks: unknown[]; history: unknown[] }) => {
+    const nextSettings = { ...DEFAULT_SETTINGS, ...data.settings };
+    setSettings(nextSettings);
+    saveSettings(nextSettings);
+    setTasks(data.tasks as PomodoroTask[]);
+    saveTasks(data.tasks as PomodoroTask[]);
+    setHistory(data.history as DailyRecord[]);
+    saveHistory(data.history as DailyRecord[]);
     resetTimer();
+    setTimeLeft(nextSettings.focusDuration * 60);
+    setCompletedPomos(0);
+    clearTimerState();
   };
 
   // ----- Update page title -----
@@ -401,7 +412,7 @@ export default function PomodoroApp() {
 
       {/* Analytics Tab */}
       {tab === 'analytics' && (
-        <Analytics history={history} tasks={tasks} onExport={handleExport} onClear={handleClear} />
+        <Analytics history={history} tasks={tasks} onExport={handleExport} onApplyImport={handleApplyImport} onClear={handleClear} />
       )}
     </div>
   );

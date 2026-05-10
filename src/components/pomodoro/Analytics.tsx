@@ -1,14 +1,47 @@
-import { useMemo } from 'react';
+import { useMemo, useRef, useState, useEffect } from 'react';
 import type { DailyRecord, PomodoroTask } from '../../lib/pomodoro-storage';
+
+interface ImportData {
+  settings: Record<string, unknown>;
+  tasks: unknown[];
+  history: unknown[];
+}
 
 interface Props {
   history: DailyRecord[];
   tasks: PomodoroTask[];
   onExport: () => void;
+  onApplyImport: (data: ImportData) => void;
   onClear: () => void;
 }
 
-export default function Analytics({ history, tasks, onExport, onClear }: Props) {
+export default function Analytics({ history, tasks, onExport, onApplyImport, onClear }: Props) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
+  const [pendingImport, setPendingImport] = useState<ImportData | null>(null);
+
+  useEffect(() => {
+    if (showClearConfirm || pendingImport) document.body.style.overflow = 'hidden';
+    else document.body.style.overflow = 'unset';
+    return () => { document.body.style.overflow = 'unset'; };
+  }, [showClearConfirm, pendingImport]);
+
+  const handleFileSelect = (file: File) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const data = JSON.parse(reader.result as string);
+        if (!data.settings || !Array.isArray(data.tasks) || !Array.isArray(data.history)) {
+          alert('Invalid file: must contain settings, tasks, and history.');
+          return;
+        }
+        setPendingImport(data);
+      } catch {
+        alert('Failed to parse file. Make sure it is a valid JSON export.');
+      }
+    };
+    reader.readAsText(file);
+  };
   const today = new Date().toISOString().slice(0, 10);
   const todayRecord = history.find(r => r.date === today);
 
@@ -77,7 +110,10 @@ export default function Analytics({ history, tasks, onExport, onClear }: Props) 
         <h3>📊 Analytics</h3>
         <div className="analytics-actions">
           <button className="btn-sm" onClick={onExport}>Export JSON</button>
-          <button className="btn-sm danger" onClick={onClear}>Clear Data</button>
+          <button className="btn-sm" onClick={() => fileInputRef.current?.click()}>Import JSON</button>
+          <input ref={fileInputRef} type="file" accept=".json" style={{ display: 'none' }}
+            onChange={e => { const f = e.target.files?.[0]; if (f) handleFileSelect(f); e.target.value = ''; }} />
+          <button className="btn-sm danger" onClick={() => setShowClearConfirm(true)}>Clear History</button>
         </div>
       </div>
 
@@ -197,6 +233,58 @@ export default function Analytics({ history, tasks, onExport, onClear }: Props) 
               })}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {/* Clear history confirmation */}
+      {showClearConfirm && (
+        <div className="prioritize-overlay" onClick={() => setShowClearConfirm(false)} style={{ zIndex: 2000 }}>
+          <div className="prioritize-modal" onClick={e => e.stopPropagation()} style={{ maxWidth: '400px', padding: '2em' }}>
+            <div className="prioritize-header" style={{ marginBottom: '1em' }}>
+              <h3 className="prioritize-title" style={{ color: '#ef4444' }}>🗑️ Clear All History?</h3>
+            </div>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: '1.5', margin: '0 0 1.5em' }}>
+              This will permanently delete all your focus history and streak data. This action cannot be undone.
+            </p>
+            <div className="prioritize-actions" style={{ gap: '0.75em' }}>
+              <button className="btn" onClick={() => setShowClearConfirm(false)} style={{ background: 'var(--bg-tertiary)', flex: 1 }}>
+                Cancel
+              </button>
+              <button
+                className="btn"
+                onClick={() => { onClear(); setShowClearConfirm(false); }}
+                style={{ background: '#ef4444', color: 'white', border: 'none', flex: 1, fontWeight: '600' }}
+              >
+                Clear All
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Import confirmation */}
+      {pendingImport && (
+        <div className="prioritize-overlay" onClick={() => setPendingImport(null)} style={{ zIndex: 2000 }}>
+          <div className="prioritize-modal" onClick={e => e.stopPropagation()} style={{ maxWidth: '400px', padding: '2em' }}>
+            <div className="prioritize-header" style={{ marginBottom: '1em' }}>
+              <h3 className="prioritize-title" style={{ color: '#eab308' }}>📥 Import Data?</h3>
+            </div>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: '1.5', margin: '0 0 1.5em' }}>
+              This will replace ALL current data (settings, tasks, history). Export first if needed.
+            </p>
+            <div className="prioritize-actions" style={{ gap: '0.75em' }}>
+              <button className="btn" onClick={() => setPendingImport(null)} style={{ background: 'var(--bg-tertiary)', flex: 1 }}>
+                Cancel
+              </button>
+              <button
+                className="btn"
+                onClick={() => { onApplyImport(pendingImport); setPendingImport(null); }}
+                style={{ background: '#eab308', color: '#000', border: 'none', flex: 1, fontWeight: '600' }}
+              >
+                Import
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
