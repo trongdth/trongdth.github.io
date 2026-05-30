@@ -61,6 +61,39 @@ const faqSchema = buildFAQSchema(faqItems);
 			</div>
 			<PomodoroApp client:load />
 
+			<!-- Desktop Client Promotion -->
+			<section class="desktop-promo-section">
+				<div class="promo-card">
+					<div class="promo-tag">RECOMMENDED</div>
+					<div class="promo-body">
+						<h2>Upgrade to myOKR Desktop</h2>
+						<p class="promo-desc">
+							Prefer a dedicated app? The free, open-source <strong>myOKR (v0.1.8)</strong> client runs offline on macOS, Windows, and Linux. It combines this Pomodoro timer with monthly OKRs, Eisenhower matrix prioritizing, and weekly reviews.
+						</p>
+						<div class="promo-features">
+							<div class="promo-feature">
+								<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feature-icon"><circle cx="12" cy="12" r="10"/><line x1="22" y1="12" x2="2" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+								<span><strong>Offline first:</strong> Local database, zero tracking, and native notifications.</span>
+							</div>
+							<div class="promo-feature">
+								<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feature-icon"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+								<span><strong>Goal-linked:</strong> Automatically sync your focus session stats to key results.</span>
+							</div>
+						</div>
+						<div class="promo-actions">
+							<a href="https://github.com/trongdth/myOKR/releases/tag/v0.1.8" target="_blank" rel="noopener noreferrer" class="btn btn-glow">
+								Download v0.1.8
+								<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="margin-left: 0.25em; display: inline-block; vertical-align: middle;"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
+							</a>
+							<a href="https://github.com/trongdth/myOKR" target="_blank" rel="noopener noreferrer" class="btn-secondary-link">
+								Learn more on GitHub
+								<svg viewBox="0 0 24 24" width="14" height="14" class="external-icon"><path fill="currentColor" d="M19 19H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
+							</a>
+						</div>
+					</div>
+				</div>
+			</section>
+
 			<noscript>
 				<div class="noscript-message">
 					<p>This Pomodoro Timer requires JavaScript to run. Please enable JavaScript in your browser to use the timer.</p>
@@ -300,5 +333,155 @@ const faqSchema = buildFAQSchema(faqItems);
 		.learn-more-trigger { padding: 1em 1.25em; font-size: 0.9rem; }
 		.faq-question { padding: 0.875em 1em; font-size: 0.9rem; }
 		.faq-answer { padding: 0 1em 1em; font-size: 0.9rem; }
+	}
+
+	/* Desktop Promo Section */
+	.desktop-promo-section {
+		max-width: 700px;
+		margin: 3em auto 0;
+		padding: 0 1em;
+	}
+
+	.promo-card {
+		background: linear-gradient(135deg, var(--bg-secondary) 0%, rgba(18, 18, 26, 0.7) 100%);
+		border: 1px solid var(--border-color);
+		border-radius: 16px;
+		padding: 2.25em;
+		position: relative;
+		overflow: hidden;
+		box-shadow: var(--shadow-lg);
+		transition: border-color var(--transition-normal), box-shadow var(--transition-normal);
+	}
+
+	.promo-card::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		height: 3px;
+		background: var(--accent-gradient);
+	}
+
+	.promo-card:hover {
+		border-color: var(--accent-cyan);
+		box-shadow: 0 0 25px rgba(6, 182, 212, 0.12);
+	}
+
+	.promo-tag {
+		position: absolute;
+		top: 1.5em;
+		right: 1.5em;
+		background: rgba(6, 182, 212, 0.1);
+		color: var(--accent-cyan);
+		border: 1px solid rgba(6, 182, 212, 0.2);
+		padding: 0.25em 0.75em;
+		border-radius: 20px;
+		font-size: 0.75rem;
+		font-family: 'JetBrains Mono', monospace;
+		font-weight: 700;
+		letter-spacing: 0.05em;
+	}
+
+	.promo-body h2 {
+		font-size: 1.5rem;
+		margin-bottom: 0.75em;
+		background: var(--accent-gradient);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-clip: text;
+	}
+
+	.promo-desc {
+		color: var(--text-secondary);
+		font-size: 0.95rem;
+		line-height: 1.6;
+		margin-bottom: 1.75em;
+		max-width: 90%;
+	}
+
+	.promo-features {
+		display: flex;
+		flex-direction: column;
+		gap: 1em;
+		margin-bottom: 2em;
+	}
+
+	.promo-feature {
+		display: flex;
+		align-items: flex-start;
+		gap: 0.75em;
+		font-size: 0.9rem;
+		color: var(--text-secondary);
+	}
+
+	.feature-icon {
+		color: var(--accent-cyan);
+		flex-shrink: 0;
+		margin-top: 0.2em;
+	}
+
+	.promo-actions {
+		display: flex;
+		align-items: center;
+		gap: 1.5em;
+		flex-wrap: wrap;
+	}
+
+	.btn-glow {
+		box-shadow: 0 0 15px rgba(6, 182, 212, 0.15);
+	}
+
+	.btn-glow:hover {
+		box-shadow: 0 0 25px rgba(6, 182, 212, 0.35);
+	}
+
+	.btn-secondary-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4em;
+		color: var(--text-muted);
+		font-size: 0.9rem;
+		font-weight: 500;
+		text-decoration: none;
+		transition: color var(--transition-fast);
+	}
+
+	.btn-secondary-link:hover {
+		color: var(--text-primary);
+	}
+
+	.btn-secondary-link .external-icon {
+		transition: transform var(--transition-fast);
+		margin-left: 0.2em;
+	}
+
+	.btn-secondary-link:hover .external-icon {
+		transform: translate(2px, -2px);
+	}
+
+	@media (max-width: 640px) {
+		.promo-card {
+			padding: 1.75em;
+		}
+		.promo-tag {
+			position: static;
+			display: inline-block;
+			margin-bottom: 1em;
+		}
+		.promo-desc {
+			max-width: 100%;
+		}
+		.promo-actions {
+			flex-direction: column;
+			align-items: stretch;
+			gap: 1em;
+		}
+		.btn-glow {
+			justify-content: center;
+		}
+		.btn-secondary-link {
+			justify-content: center;
+		}
 	}
 </style>
