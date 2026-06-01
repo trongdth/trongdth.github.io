@@ -4,7 +4,7 @@ import {
   loadSettings, saveSettings, loadTasks, saveTasks, loadHistory, saveHistory,
   loadTimerState, saveTimerState, clearTimerState,
   getTodayRecord, upsertTodayRecord, playCompletionSound, sendNotification,
-  requestNotificationPermission, DEFAULT_SETTINGS,
+  requestNotificationPermission, DEFAULT_SETTINGS, getLocalDayString,
   type PomodoroSettings, type SessionType, type PomodoroTask, type DailyRecord,
 } from '../lib/pomodoro-storage';
 import TaskList from './pomodoro/TaskList';
@@ -52,7 +52,14 @@ export default function PomodoroApp() {
         setTimeLeft(newTimeLeft);
         setIsRunning(true);
       } else {
-        setTimeLeft(saved.timeLeft);
+        if (!saved.sessionStartedAt) {
+          const dur = saved.sessionType === 'focus' ? s.focusDuration 
+            : saved.sessionType === 'shortBreak' ? s.shortBreakDuration 
+            : s.longBreakDuration;
+          setTimeLeft(dur * 60);
+        } else {
+          setTimeLeft(saved.timeLeft);
+        }
         setIsRunning(false);
       }
     } else {
@@ -230,7 +237,7 @@ export default function PomodoroApp() {
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url; a.download = `pomodoro-data-${new Date().toISOString().slice(0, 10)}.json`;
+    a.href = url; a.download = `pomodoro-data-${getLocalDayString()}.json`;
     a.click(); URL.revokeObjectURL(url);
   };
 

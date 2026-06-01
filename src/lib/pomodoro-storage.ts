@@ -157,8 +157,15 @@ export function clearTimerState(): void {
   localStorage.removeItem(KEYS.state);
 }
 
+export function getLocalDayString(date: Date = new Date()): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 export function todayKey(): string {
-  return new Date().toISOString().slice(0, 10);
+  return getLocalDayString();
 }
 
 export function getTodayRecord(history: DailyRecord[]): DailyRecord {

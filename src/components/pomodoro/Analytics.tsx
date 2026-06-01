@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState, useEffect } from 'react';
-import type { DailyRecord, PomodoroTask } from '../../lib/pomodoro-storage';
+import { type DailyRecord, type PomodoroTask, getLocalDayString } from '../../lib/pomodoro-storage';
 
 interface ImportData {
   settings: Record<string, unknown>;
@@ -42,7 +42,7 @@ export default function Analytics({ history, tasks, onExport, onApplyImport, onC
     };
     reader.readAsText(file);
   };
-  const today = new Date().toISOString().slice(0, 10);
+  const today = getLocalDayString();
   const todayRecord = history.find(r => r.date === today);
 
   // Streak calculation
@@ -50,7 +50,7 @@ export default function Analytics({ history, tasks, onExport, onApplyImport, onC
     let count = 0;
     const d = new Date();
     while (true) {
-      const key = d.toISOString().slice(0, 10);
+      const key = getLocalDayString(d);
       const rec = history.find(r => r.date === key);
       if (rec && rec.completedPomodoros > 0) {
         count++;
@@ -68,7 +68,7 @@ export default function Analytics({ history, tasks, onExport, onApplyImport, onC
     for (let i = 6; i >= 0; i--) {
       const d = new Date();
       d.setDate(d.getDate() - i);
-      const key = d.toISOString().slice(0, 10);
+      const key = getLocalDayString(d);
       const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
       const rec = history.find(r => r.date === key);
       days.push({ label: dayNames[d.getDay()], value: rec?.completedPomodoros || 0, date: key });
@@ -86,7 +86,7 @@ export default function Analytics({ history, tasks, onExport, onApplyImport, onC
     for (let i = 34; i >= 0; i--) {
       const d = new Date();
       d.setDate(d.getDate() - i);
-      const key = d.toISOString().slice(0, 10);
+      const key = getLocalDayString(d);
       const rec = history.find(r => r.date === key);
       const count = rec?.completedPomodoros || 0;
       let level = 0;
