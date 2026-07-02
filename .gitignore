@@ -27,3 +27,4 @@ pnpm-debug.log*
 
 # AI assistant
 .claude/
+.playwright-mcp

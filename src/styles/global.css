@@ -261,6 +261,8 @@ pre {
   border: 1px solid var(--border-color);
   border-radius: 12px;
   overflow-x: auto;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
 }
 
 pre > code {

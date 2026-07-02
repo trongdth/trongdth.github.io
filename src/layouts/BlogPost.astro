@@ -121,6 +121,23 @@ const breadcrumbSchema = buildBreadcrumbSchema([
 			</div>
 		</main>
 		<Footer />
+		<script>
+			document.querySelectorAll('.article-content pre').forEach((pre) => {
+				const button = document.createElement('button');
+				button.type = 'button';
+				button.className = 'copy-code-button';
+				button.textContent = 'Copy';
+				button.addEventListener('click', async () => {
+					const code = pre.querySelector('code');
+					await navigator.clipboard.writeText(code?.innerText ?? '');
+					button.textContent = 'Copied!';
+					setTimeout(() => {
+						button.textContent = 'Copy';
+					}, 2000);
+				});
+				pre.appendChild(button);
+			});
+		</script>
 	</body>
 </html>
 
@@ -225,6 +242,26 @@ const breadcrumbSchema = buildBreadcrumbSchema([
 
 	.article-content :global(pre) {
 		margin: 2em 0;
+		position: relative;
+	}
+
+	.article-content :global(.copy-code-button) {
+		position: absolute;
+		top: 0.75em;
+		right: 0.75em;
+		padding: 0.35em 0.85em;
+		font-size: 0.8rem;
+		font-family: inherit;
+		color: var(--text-secondary);
+		background: var(--bg-tertiary);
+		border: 1px solid var(--border-color);
+		border-radius: 6px;
+		cursor: pointer;
+		transition: color var(--transition-fast);
+	}
+
+	.article-content :global(.copy-code-button:hover) {
+		color: var(--accent-cyan);
 	}
 
 	.article-content :global(img) {
